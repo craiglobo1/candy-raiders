@@ -1,6 +1,6 @@
 from operator import imod
 import pygame
-from objects import Player
+from objects import Player, Enemy
 from button import Button
 
 size = width, height  = 700, 800

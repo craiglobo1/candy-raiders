@@ -19,7 +19,7 @@ class Player:
         self.RIGHT = False
         self.LEFT = False
 
-        self.projectiles : List[Projectile] = [Projectile(0, 0, 15) for _ in range(5)]
+        self.projectiles = ProjectilePool(10)
     
     def move(self, right, left):
         self.RIGHT = right
@@ -41,6 +41,7 @@ class Player:
             self.dx = 0
 
         self.x += self.dx * dt + (self.acc * .5) * (dt *dt)
+        self.projectiles.update(dt)
         
     
     def draw(self, win : pygame.Surface):
@@ -48,9 +49,6 @@ class Player:
         # pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y, self.width, self.height))
 
         self.projectiles.draw(win)
-
-        for p in self.projectiles:
-            p.draw(win)
     
     def shoot(self):
         pass
@@ -120,11 +118,11 @@ class Projectile:
         self.x = 0
         self.y = 0
         self.speed = speed
-        self.visible = False
+        self.active = active
         self.image = pygame.image.load(image).convert()
     
     def draw(self, win : pygame.Surface):
-        if self.visible:
+        if self.active:
             win.blit(self.image, (self.x, self.y))
     
     def update(self, dt):
@@ -150,6 +148,7 @@ class ProjectilePool:
         if self.time_till_last_fire < self.rate_of_fire:
             return
 
+
         self.projectiles[self.cur_projectile].set_pos(x,y)
         self.projectiles[self.cur_projectile].active = True
         self.cur_projectile = (self.cur_projectile+1)%self.size
@@ -159,6 +158,8 @@ class ProjectilePool:
         self.projectiles[cur_projectile].active = False
 
     def update(self, dt : float):
+        print(self.time_till_last_fire, self.rate_of_fire)
+        # print([ p.active for p in self.projectiles])
         self.time_till_last_fire += dt
 
         for i, p in enumerate(self.projectiles):
@@ -169,7 +170,7 @@ class ProjectilePool:
 
     def draw(self, win):
         for p in self.projectiles:
-            if p.active:
-                p.draw(win)
+            # if p.active:
+            p.draw(win)
 
 
