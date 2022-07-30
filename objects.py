@@ -92,8 +92,7 @@ class EnemySpawner:
     def __init__(self,start_x, end_x , dx = 1) -> None:
         self.start_x = start_x 
         self.end_x = end_x
-        self.x = self.initial_x = x
-
+        
         self.dx = dx
         self.dir = 1
         self.dy = 0
