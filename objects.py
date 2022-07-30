@@ -19,8 +19,7 @@ class Player:
         self.RIGHT = False
         self.LEFT = False
 
-        self.projectiles = ProjectilePool(10)
-
+        self.projectiles : List[Projectile] = [Projectile(0, 0, 15) for _ in range(5)]
     
     def move(self, right, left):
         self.RIGHT = right
@@ -42,8 +41,6 @@ class Player:
             self.dx = 0
 
         self.x += self.dx * dt + (self.acc * .5) * (dt *dt)
-
-        self.projectiles.update(dt)
         
     
     def draw(self, win : pygame.Surface):
@@ -52,10 +49,11 @@ class Player:
 
         self.projectiles.draw(win)
 
+        for p in self.projectiles:
+            p.draw(win)
     
     def shoot(self):
-        self.projectiles.create(self.x + self.width*0.5, self.y - 10)
-    
+        pass
 
 
 class Enemy:
@@ -122,17 +120,15 @@ class Projectile:
         self.x = 0
         self.y = 0
         self.speed = speed
-        self.active = active
-        self.image = pygame.image.load(image)
-        self.direction = direction
+        self.visible = False
+        self.image = pygame.image.load(image).convert()
     
     def draw(self, win : pygame.Surface):
-        if self.active:
+        if self.visible:
             win.blit(self.image, (self.x, self.y))
     
     def update(self, dt):
-        if self.active:
-            self.y += dt*self.speed*self.direction
+        self.y -= dt*self.speed
     
     def get_rect(self):
         return pygame.Rect(self.x, self.y, *self.image.get_size())
