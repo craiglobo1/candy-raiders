@@ -14,7 +14,7 @@ class Game:
 
     
     def new(self):
-        self.player = Player(100, 100)
+        self.player = Player(width*0.05, height*0.9)
         self.run()
 
     def main_menu(self):
@@ -33,14 +33,17 @@ class Game:
 
     def events(self):
         pos = pygame.mouse.get_pos()
+        keys = pygame.key.get_pressed()
         for event in pygame.event.get():    
             if event.type == pygame.QUIT:
                 if self.playing:
                     self.playing = False
         
+        self.player.move(keys[pygame.K_RIGHT]|keys[pygame.K_d], keys[pygame.K_LEFT]|keys[pygame.K_a])
+        
 
     def update(self):
-        pass
+        self.player.update(self.dt)
         
 
     def draw(self):
