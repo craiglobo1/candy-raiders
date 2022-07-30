@@ -84,6 +84,27 @@ class Enemy:
         self.projectiles.create(self.x + self.width*0.5, self.y + self.height + 10)
 
 
+
+class EnemySpawnerGroup:
+    def __init__(self,x, y, rows, cols, width, padding=15, dx = 1) -> None:
+        self.rows = rows 
+        self.cols = cols
+        self.width = width
+        self.x = self.initial_x = x
+
+        self.dx = dx
+        self.dir = 1
+        self.dy = 0
+    
+    def update(self, dt):
+        pass
+
+    def draw(self, win : pygame.Surface):
+        pass
+
+    def kill_enemy(self, rect : pg.Rect):
+        pass
+
 class Projectile:
     def __init__(self, speed, direction=-1, active=False, image="images\laser.png") -> None:
         self.x = 0
