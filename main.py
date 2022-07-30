@@ -1,6 +1,7 @@
 from operator import imod
 import pygame
 from objects import Player
+from button import Button
 
 size = width, height  = 700, 800
 FPS = 60
@@ -20,19 +21,32 @@ class Game:
 
     def main_menu(self,win,):
         self.playing = True
+        pos = pygame.mouse.get_pos()
+        play_button = Button(225,300,250,75,self.win)
+        quit_button = Button(225,420,250,75,self.win)
         while self.playing == True:
             self.clock.tick(60)
-            bg_colour= (3, 244, 252)
-            self.win.fill(bg_colour)
-            ellipsis_colour=(245, 78, 200)
-            pygame.draw.rect
-            rect = pygame.Rect(50,100,600,400)
-            pygame.draw.ellipse(self.win,ellipsis_colour, rect, width == 0)
-            font = pygame.font.SysFont('Corbel',60,bold=pygame.font.Font.bold)
-            font_colour = (237, 192, 225)
-            game_title = pygame.font.Font.render(font,'Candy Raiders', True, font_colour)
-            self.win.blit(game_title,(100,400))
-            pygame.font.get_fonts()
+            bg_colour= (153, 204, 255)
+            background= pygame.image.load('images/background.png')
+            self.win.blit(background,(0,0))
+            rect_colour=(255, 102, 178)
+            rect = pygame.Rect(225,300,250,75)
+            middle_rect = pygame.Rect(225,420,250,75)
+            end_rect = pygame.Rect(225,540,250,75)
+            pygame.draw.rect(self.win,rect_colour, rect, width == 0)
+            pygame.draw.rect(self.win,rect_colour, middle_rect, width == 0)
+            pygame.draw.rect(self.win,rect_colour, end_rect, width == 0)
+            for event in pygame.event.get():    
+                if event.type == pygame.QUIT:
+                    if self.playing:
+                        self.playing = False
+                if event.type == pygame.mouse.get_pressed():
+                    if play_button.selected(pos):
+                        return
+                    if quit_button == pygame.mouse.get_pressed():
+                        if quit_button.selected(pos):
+                            self.playing = False
+
             
             pygame.display.flip()
 
@@ -56,6 +70,8 @@ class Game:
             if event.type == pygame.QUIT:
                 if self.playing:
                     self.playing = False
+
+
         
         self.player.move(keys[pygame.K_RIGHT]|keys[pygame.K_d], keys[pygame.K_LEFT]|keys[pygame.K_a])
         
@@ -68,6 +84,7 @@ class Game:
         self.player.draw(self.win)
         pygame.display.flip()
         self.win.fill(0)
+
 
 
 game = Game()
