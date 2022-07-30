@@ -1,7 +1,11 @@
 from operator import imod
 import pygame
+<<<<<<< HEAD
 from objects import Player
 from button import Button
+=======
+from objects import Enemy, Player
+>>>>>>> 5befa1f90ae391928160e901873cce479ffc656c
 
 size = width, height  = 700, 800
 FPS = 60
@@ -19,6 +23,7 @@ class Game:
         self.player = Player(width*0.05, height*0.9)
         self.run()
 
+<<<<<<< HEAD
     def main_menu(self,win,):
         self.playing = True
         pos = pygame.mouse.get_pos()
@@ -51,6 +56,10 @@ class Game:
             pygame.display.flip()
 
 
+=======
+    def main_menu(self):
+        pass
+>>>>>>> 5befa1f90ae391928160e901873cce479ffc656c
 
     def run(self):
 
@@ -70,8 +79,15 @@ class Game:
             if event.type == pygame.QUIT:
                 if self.playing:
                     self.playing = False
+<<<<<<< HEAD
 
 
+=======
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.player.shoot()
+>>>>>>> 5befa1f90ae391928160e901873cce479ffc656c
         
         self.player.move(keys[pygame.K_RIGHT]|keys[pygame.K_d], keys[pygame.K_LEFT]|keys[pygame.K_a])
         
