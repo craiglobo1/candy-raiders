@@ -10,12 +10,17 @@ class Game:
         pygame.display.set_caption("Candy Raiders")
         self.clock = pygame.time.Clock()
 
-
+    
     def new(self):
-
         self.run()
 
+    def main_menu():
+        pass
+
     def run(self):
+
+        self.main_menu()
+
         self.playing = True
         while self.playing:
             self.dt = self.clock.tick(120)
@@ -30,9 +35,6 @@ class Game:
                 if self.playing:
                     self.playing = False
         
-            
-
-                    
 
     def update(self):
         pass
