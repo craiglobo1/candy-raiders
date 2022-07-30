@@ -18,7 +18,7 @@ class Game:
     def run(self):
         self.playing = True
         while self.playing:
-            self.dt = self.clock.tick(60)
+            self.dt = self.clock.tick(120)
             self.events()
             self.update()
             self.draw()
