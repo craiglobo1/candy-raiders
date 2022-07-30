@@ -3,6 +3,7 @@ import pygame
 from objects import Player
 
 size = width, height  = 700, 800
+FPS = 60
 
 class Game:
     def __init__(self) -> None:
@@ -43,7 +44,7 @@ class Game:
 
         self.playing = True
         while self.playing:
-            self.dt = self.clock.tick(60)
+            self.dt = self.clock.tick(FPS) * .001 * FPS
             self.events()
             self.update()
             self.draw()
