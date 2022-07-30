@@ -102,7 +102,7 @@ class EnemySpawnerGroup:
     def draw(self, win : pygame.Surface):
         pass
 
-    def kill_enemy(self, rect : pg.Rect):
+    def kill_enemy(self, rect : pygame.Rect):
         pass
 
 class Projectile:
