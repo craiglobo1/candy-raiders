@@ -14,12 +14,28 @@ class Game:
     def new(self):
         self.run()
 
-    def main_menu():
-        pass
+    def main_menu(self,win,):
+        self.playing = True
+        while self.playing == True:
+            bg_colour= (3, 244, 252)
+            self.win.fill(bg_colour)
+            ellipsis_colour=(245, 78, 200)
+            pygame.draw.rect
+            rect = pygame.Rect(50,100,600,400)
+            pygame.draw.ellipse(self.win,ellipsis_colour, rect, width == 0)
+            font = pygame.font.SysFont('Corbel',60,bold=pygame.font.Font.bold)
+            font_colour = (237, 192, 225)
+            game_title = pygame.font.Font.render(font,'Candy Raiders', True, font_colour)
+            self.win.blit(game_title,(100,400))
+            pygame.font.get_fonts()
+            
+            pygame.display.flip()
+
+
 
     def run(self):
 
-        self.main_menu()
+        self.main_menu(self.win)
 
         self.playing = True
         while self.playing:
