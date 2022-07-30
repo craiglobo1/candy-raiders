@@ -5,6 +5,8 @@ class Player:
     def __init__(self, x, y, acc=0, drag=-0.09,max_dx=4) -> None:
         self.x = x
         self.y = y
+        self.width = 60
+        self.height = 30
         self.dx = 0
 
         self.acc = acc
@@ -13,6 +15,8 @@ class Player:
 
         self.RIGHT = False
         self.LEFT = False
+
+        self.projectiles = ProjectilePool(10)
 
     
     def move(self, right, left):
@@ -35,14 +39,19 @@ class Player:
             self.dx = 0
 
         self.x += self.dx * dt + (self.acc * .5) * (dt *dt)
+
+        self.projectiles.update(dt)
         
     
     def draw(self, win : pygame.Surface):
-        pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y,60, 30))
+        pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y, self.width, self.height))
+
+        self.projectiles.draw(win)
 
     
     def shoot(self):
-        pass
+        self.projectiles.create(self.x + self.width*0.5, self.y - 10)
+    
 
 
 class Projectile:
@@ -58,7 +67,8 @@ class Projectile:
             win.blit(self.image, (self.x, self.y))
     
     def update(self, dt):
-        self.y -= dt*self.speed
+        if self.active:
+            self.y -= dt*self.speed
     
     def get_rect(self):
         return pygame.Rect(self.x, self.y, *self.image.get_size())
@@ -69,23 +79,30 @@ class Projectile:
 
 
 class ProjectilePool:
-    def __init__(self, size : int) -> None:
+    def __init__(self, size : int, rate_of_fire : float = 30) -> None:
         self.size = size
         self.projectiles : List[Projectile] = [Projectile(3) for _ in range(size)]
         self.cur_projectile = 0
+        self.rate_of_fire = rate_of_fire
+        self.time_till_last_fire = rate_of_fire
     
     def create(self, x, y):
+        if self.time_till_last_fire < self.rate_of_fire:
+            return
+
         self.projectiles[self.cur_projectile].set_pos(x,y)
         self.projectiles[self.cur_projectile].active = True
         self.cur_projectile = (self.cur_projectile+1)%self.size
+        self.time_till_last_fire = 0
 
     def destroy(self, cur_projectile : int):
         self.projectiles[cur_projectile].active = False
 
     def update(self, dt : float):
+        self.time_till_last_fire += dt
+
         for i, p in enumerate(self.projectiles):
-            active = p.active
-            if active and p.y > 0:
+            if p.y > 0:
                 p.update(dt)
             else:
                 self.destroy(i)

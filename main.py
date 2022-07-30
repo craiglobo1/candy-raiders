@@ -39,6 +39,10 @@ class Game:
             if event.type == pygame.QUIT:
                 if self.playing:
                     self.playing = False
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.player.shoot()
         
         self.player.move(keys[pygame.K_RIGHT]|keys[pygame.K_d], keys[pygame.K_LEFT]|keys[pygame.K_a])
         
