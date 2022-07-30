@@ -55,14 +55,13 @@ class Player:
 
 
 class Enemy:
-    def __init__(self, x, y) -> None:
+    def __init__(self, x, y, image="images\candy_monster.png") -> None:
         self.x = x
         self.y = y
-        self.width = 60
-        self.height = 30
-
-        self.RIGHT = False
-        self.LEFT = False
+        self.image = pygame.image.load(image)
+        self.width, self.height = self.image.get_size()
+        self.image = pygame.transform.scale(self.image, (self.width*0.3, self.height*0.3))
+        self.width, self.height = self.image.get_size()
 
         self.projectiles = ProjectilePool(10, direction=1)
 
@@ -76,7 +75,7 @@ class Enemy:
         self.y += dy 
     
     def draw(self, win : pygame.Surface):
-        pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y, self.width, self.height))
+        win.blit(self.image, (self.x, self.y))
 
         self.projectiles.draw(win)
 
@@ -143,4 +142,5 @@ class ProjectilePool:
         for p in self.projectiles:
             if p.active:
                 p.draw(win)
-    
+
+

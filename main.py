@@ -16,6 +16,7 @@ class Game:
     
     def new(self):
         self.player = Player(width*0.05, height*0.9)
+        self.enemy = Enemy(width*0.05, height*0.1)
         self.run()
 
     def main_menu(self):
@@ -43,15 +44,19 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.player.shoot()
+                    self.enemy.move(5,5)
+                    self.enemy.shoot()
         
         self.player.move(keys[pygame.K_RIGHT]|keys[pygame.K_d], keys[pygame.K_LEFT]|keys[pygame.K_a])
         
 
     def update(self):
+        self.enemy.update(self.dt)
         self.player.update(self.dt)
         
 
     def draw(self):
+        self.enemy.draw(self.win)
         self.player.draw(self.win)
         pygame.display.flip()
         self.win.fill(0)
