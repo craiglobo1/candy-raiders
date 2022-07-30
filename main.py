@@ -1,15 +1,10 @@
 from operator import imod
 import pygame
-<<<<<<< HEAD
 from objects import Player
 from button import Button
-=======
-from objects import Enemy, Player
->>>>>>> 5befa1f90ae391928160e901873cce479ffc656c
 
 size = width, height  = 700, 800
 FPS = 60
-
 class Game:
     def __init__(self) -> None:
         pygame.font.init()
@@ -23,14 +18,13 @@ class Game:
         self.player = Player(width*0.05, height*0.9)
         self.run()
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    def main_menu(self,win,):
+    def main_menu(self,win):
         self.playing = True
-        pos = pygame.mouse.get_pos()
         play_button = Button(225,300,250,75,self.win)
         quit_button = Button(225,420,250,75,self.win)
+        rule_button = Button(225,540,250,75,self.win)
         while self.playing == True:
+            pos = pygame.mouse.get_pos()
             self.clock.tick(60)
             bg_colour= (153, 204, 255)
             background= pygame.image.load('images/background.png')
@@ -46,40 +40,23 @@ class Game:
                 if event.type == pygame.QUIT:
                     if self.playing:
                         self.playing = False
-                if event.type == pygame.mouse.get_pressed():
-                    if play_button.selected(pos):
-                        return
-                    if quit_button == pygame.mouse.get_pressed():
-                        if quit_button.selected(pos):
-                            self.playing = False
+            if pygame.mouse.get_pressed()[0]:
+                if play_button.selected(*pos):
+                    print("exit")
+                    return
+                if quit_button.selected(*pos):
+                    self.playing = False
+                if rule_button.selected(*pos):
+                    pass
 
-=======
-    def main_menu(self,win,):
-        self.playing = True
-        while self.playing == True:
-            bg_colour= (3, 244, 252)
-            self.win.fill(bg_colour)
-            ellipsis_colour=(245, 78, 200)
-            pygame.draw.rect
-            rect = pygame.Rect(50,100,600,400)
-            pygame.draw.ellipse(self.win,ellipsis_colour, rect, width == 0)
-            font = pygame.font.SysFont('Corbel',60,bold=pygame.font.Font.bold)
-            font_colour = (237, 192, 225)
-            game_title = pygame.font.Font.render(font,'Candy Raiders', True, font_colour)
-            self.win.blit(game_title,(100,400))
-            pygame.font.get_fonts()
->>>>>>> 3befc4c61cc2be535397db33eb4148d014aeb2d2
+
             
             pygame.display.flip()
-
-
-<<<<<<< HEAD
-=======
-    def main_menu(self):
+    
+    def rule_popup(self):
         pass
->>>>>>> 5befa1f90ae391928160e901873cce479ffc656c
-=======
->>>>>>> 3befc4c61cc2be535397db33eb4148d014aeb2d2
+
+
 
     def run(self):
 
@@ -87,11 +64,8 @@ class Game:
 
         self.playing = True
         while self.playing:
-<<<<<<< HEAD
             self.dt = self.clock.tick(FPS) * .001 * FPS
-=======
             self.dt = self.clock.tick(120)
->>>>>>> 3befc4c61cc2be535397db33eb4148d014aeb2d2
             self.events()
             self.update()
             self.draw()
@@ -103,15 +77,13 @@ class Game:
             if event.type == pygame.QUIT:
                 if self.playing:
                     self.playing = False
-<<<<<<< HEAD
 
 
-=======
+
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.player.shoot()
->>>>>>> 5befa1f90ae391928160e901873cce479ffc656c
         
         self.player.move(keys[pygame.K_RIGHT]|keys[pygame.K_d], keys[pygame.K_LEFT]|keys[pygame.K_a])
         

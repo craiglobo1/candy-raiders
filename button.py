@@ -7,4 +7,4 @@ class Button:
         self.rect = pygame.Rect(x,y,width,height)
     def selected(self,x,y):
         position = (x,y)
-        return pygame.Rect.collidepoint(position)
+        return self.rect.collidepoint(position)
