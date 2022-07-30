@@ -1,5 +1,6 @@
 import pygame
 from typing import List 
+from random import randint
 
 class Player:
     def __init__(self, x, y, acc=0, drag=-0.09,max_dx=4) -> None:
@@ -61,6 +62,8 @@ class Enemy:
     def __init__(self, x, y, image="images\candy_monster.png") -> None:
         self.x = x
         self.y = y
+        self.active = False
+
         self.image = pygame.image.load(image)
         self.width, self.height = self.image.get_size()
         self.image = pygame.transform.scale(self.image, (self.width*0.3, self.height*0.3))
@@ -70,17 +73,19 @@ class Enemy:
 
 
     def update(self, dt):
-
-        self.projectiles.update(dt)
+        if self.active:
+            self.projectiles.update(dt)
     
     def move(self, dx, dy):
-        self.x += dx
-        self.y += dy 
+        if self.active:
+            self.x += dx
+            self.y += dy 
     
     def draw(self, win : pygame.Surface):
-        win.blit(self.image, (self.x, self.y))
+        if self.active:
+            win.blit(self.image, (self.x, self.y))
 
-        self.projectiles.draw(win)
+            self.projectiles.draw(win)
 
     
     def shoot(self):
@@ -89,17 +94,23 @@ class Enemy:
 
 
 class EnemySpawner:
-    def __init__(self,start_x, end_x , dx = 1) -> None:
+    def __init__(self,start_x, end_x ,rate_of_spawn : float, dy = 1) -> None:
         self.start_x = start_x 
         self.end_x = end_x
-        
-        self.dx = dx
-        self.dir = 1
-        self.dy = 0
+        self.rate_of_spawn = rate_of_spawn
+
+        self.dy = dy
+        self.time_till_last_spawn = 0
+
+        self.enemies = [ Enemy(randint(self.start_x, self.end_x, 0)) for _ in range(20)]
     
     def update(self, dt):
-        pass
+        self.time_till_last_spawn += dt
 
+
+    def create(self):
+        pass
+        
     def draw(self, win : pygame.Surface):
         pass
 
