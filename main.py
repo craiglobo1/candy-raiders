@@ -1,11 +1,7 @@
 from operator import imod
 import pygame
-<<<<<<< HEAD
 from objects import Player
 from button import Button
-=======
-from objects import Enemy, Player
->>>>>>> 5befa1f90ae391928160e901873cce479ffc656c
 
 size = width, height  = 700, 800
 FPS = 60
