@@ -24,6 +24,7 @@ class Game:
         self.run()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     def main_menu(self,win,):
         self.playing = True
         pos = pygame.mouse.get_pos()
@@ -52,14 +53,33 @@ class Game:
                         if quit_button.selected(pos):
                             self.playing = False
 
+=======
+    def main_menu(self,win,):
+        self.playing = True
+        while self.playing == True:
+            bg_colour= (3, 244, 252)
+            self.win.fill(bg_colour)
+            ellipsis_colour=(245, 78, 200)
+            pygame.draw.rect
+            rect = pygame.Rect(50,100,600,400)
+            pygame.draw.ellipse(self.win,ellipsis_colour, rect, width == 0)
+            font = pygame.font.SysFont('Corbel',60,bold=pygame.font.Font.bold)
+            font_colour = (237, 192, 225)
+            game_title = pygame.font.Font.render(font,'Candy Raiders', True, font_colour)
+            self.win.blit(game_title,(100,400))
+            pygame.font.get_fonts()
+>>>>>>> 3befc4c61cc2be535397db33eb4148d014aeb2d2
             
             pygame.display.flip()
 
 
+<<<<<<< HEAD
 =======
     def main_menu(self):
         pass
 >>>>>>> 5befa1f90ae391928160e901873cce479ffc656c
+=======
+>>>>>>> 3befc4c61cc2be535397db33eb4148d014aeb2d2
 
     def run(self):
 
@@ -67,7 +87,11 @@ class Game:
 
         self.playing = True
         while self.playing:
+<<<<<<< HEAD
             self.dt = self.clock.tick(FPS) * .001 * FPS
+=======
+            self.dt = self.clock.tick(120)
+>>>>>>> 3befc4c61cc2be535397db33eb4148d014aeb2d2
             self.events()
             self.update()
             self.draw()
