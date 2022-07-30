@@ -1,6 +1,8 @@
+from operator import imod
 import pygame
+from objects import Player
 
-size = height, width = 700, 700
+size = width, height  = 700, 800
 
 class Game:
     def __init__(self) -> None:
@@ -12,11 +14,13 @@ class Game:
 
     
     def new(self):
+        self.player = Player(100, 100)
         self.run()
 
     def main_menu(self,win,):
         self.playing = True
         while self.playing == True:
+            self.clock.tick(60)
             bg_colour= (3, 244, 252)
             self.win.fill(bg_colour)
             ellipsis_colour=(245, 78, 200)
@@ -39,7 +43,7 @@ class Game:
 
         self.playing = True
         while self.playing:
-            self.dt = self.clock.tick(120)
+            self.dt = self.clock.tick(60)
             self.events()
             self.update()
             self.draw()
@@ -57,6 +61,7 @@ class Game:
         
 
     def draw(self):
+        self.player.draw(self.win)
         pygame.display.flip()
         self.win.fill(0)
 
