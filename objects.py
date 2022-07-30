@@ -5,8 +5,10 @@ class Player:
     def __init__(self, x, y, acc=0, drag=-0.09,max_dx=4) -> None:
         self.x = x
         self.y = y
-        self.width = 60
-        self.height = 30
+
+        self.image = pygame.image.load("images\candy_ship.png")
+
+        self.width, self.height = self.image.get_size()
         self.dx = 0
 
         self.acc = acc
@@ -44,7 +46,8 @@ class Player:
         
     
     def draw(self, win : pygame.Surface):
-        pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y, self.width, self.height))
+        win.blit(self.image, (self.x, self.y))
+        # pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y, self.width, self.height))
 
         self.projectiles.draw(win)
 
@@ -85,11 +88,10 @@ class Enemy:
 
 
 
-class EnemySpawnerGroup:
-    def __init__(self,x, y, rows, cols, width, padding=15, dx = 1) -> None:
-        self.rows = rows 
-        self.cols = cols
-        self.width = width
+class EnemySpawner:
+    def __init__(self,start_x, end_x , dx = 1) -> None:
+        self.start_x = start_x 
+        self.end_x = end_x
         self.x = self.initial_x = x
 
         self.dx = dx
