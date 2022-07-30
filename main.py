@@ -43,7 +43,6 @@ class Game:
                         self.playing = False
             if pygame.mouse.get_pressed()[0]:
                 if play_button.selected(*pos):
-                    print("exit")
                     return
                 if quit_button.selected(*pos):
                     self.playing = False

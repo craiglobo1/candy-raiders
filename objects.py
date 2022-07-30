@@ -18,13 +18,15 @@ class Player:
         self.RIGHT = False
         self.LEFT = False
 
-        self.projectiles = ProjectilePool(10)
+        self.projectiles = ProjectilePool(10, direction=1)
     
     def move(self, right, left):
         self.RIGHT = right
         self.LEFT = left
 
     def update(self, dt):
+        self.projectiles.update(dt)
+
         self.acc = 0
         if self.RIGHT:
             self.acc += .3
@@ -40,7 +42,6 @@ class Player:
             self.dx = 0
 
         self.x += self.dx * dt + (self.acc * .5) * (dt *dt)
-        self.projectiles.update(dt)
         
     
     def draw(self, win : pygame.Surface):
@@ -50,7 +51,7 @@ class Player:
         self.projectiles.draw(win)
     
     def shoot(self):
-        pass
+        self.projectiles.create(self.x + self.width*0.5, self.y+5)
 
 
 class Enemy:
@@ -62,7 +63,7 @@ class Enemy:
         self.image = pygame.transform.scale(self.image, (self.width*0.3, self.height*0.3))
         self.width, self.height = self.image.get_size()
 
-        self.projectiles = ProjectilePool(10, direction=1)
+        self.projectiles = ProjectilePool(10,direction=-1)
 
 
     def update(self, dt):
@@ -103,19 +104,20 @@ class EnemySpawner:
         pass
 
 class Projectile:
-    def __init__(self, speed, direction=-1, active=False, image="images\laser.png") -> None:
+    def __init__(self, speed, direction, active=False, image="images\laser.png") -> None:
         self.x = 0
         self.y = 0
         self.speed = speed
         self.active = active
         self.image = pygame.image.load(image).convert()
+        self.direction = direction
     
     def draw(self, win : pygame.Surface):
         if self.active:
             win.blit(self.image, (self.x, self.y))
     
     def update(self, dt):
-        self.y -= dt*self.speed
+        self.y -= dt*self.speed*self.direction
     
     def get_rect(self):
         return pygame.Rect(self.x, self.y, *self.image.get_size())
@@ -147,8 +149,6 @@ class ProjectilePool:
         self.projectiles[cur_projectile].active = False
 
     def update(self, dt : float):
-        print(self.time_till_last_fire, self.rate_of_fire)
-        # print([ p.active for p in self.projectiles])
         self.time_till_last_fire += dt
 
         for i, p in enumerate(self.projectiles):
