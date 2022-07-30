@@ -44,7 +44,8 @@ class Player:
         for p in self.projectiles:
             p.draw(win)
     
-    def shoot(self)
+    def shoot(self):
+        pass
 
 
 class Projectile:
