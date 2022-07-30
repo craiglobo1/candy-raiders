@@ -1,6 +1,8 @@
+from operator import imod
 import pygame
+from objects import Player
 
-size = height, width = 700, 700
+size = width, height  = 700, 800
 
 class Game:
     def __init__(self) -> None:
@@ -12,9 +14,10 @@ class Game:
 
     
     def new(self):
+        self.player = Player(100, 100)
         self.run()
 
-    def main_menu():
+    def main_menu(self):
         pass
 
     def run(self):
@@ -41,6 +44,7 @@ class Game:
         
 
     def draw(self):
+        self.player.draw(self.win)
         pygame.display.flip()
         self.win.fill(0)
 
