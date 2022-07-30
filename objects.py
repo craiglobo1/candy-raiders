@@ -13,6 +13,8 @@ class Player:
         self.width, self.height = self.image.get_size()
         self.dx = 0
 
+        self.health = 100
+
         self.acc = acc
         self.drag = drag
         self.max_dx = max_dx
@@ -21,6 +23,7 @@ class Player:
         self.LEFT = False
 
         self.projectiles = ProjectilePool(10, direction=1)
+        self.health = 100
     
     def move(self, right, left):
         self.RIGHT = right
@@ -54,10 +57,23 @@ class Player:
     
     def shoot(self):
         self.projectiles.create(self.x + self.width*0.5, self.y+5)
+    
+    def damage(self, rect : pygame.Rect, damage : int):
+        
+        collided = rect.colliderect(self.get_rect())
+        if collided:
+            self.health -= damage
+
+        return collided
+    
+    def get_rect(self):
+        return pygame.Rect(self.x, self.y,self.width, self.height)
+    
+
 
 
 class Enemy:
-    def __init__(self, x, y, active=False,image="images\candy_monster.png") -> None:
+    def __init__(self, x, y, rate_of_fire=150, active=False,image="images\candy_monster.png") -> None:
         self.x = x
         self.y = y
         self.image = pygame.image.load(image)
@@ -66,13 +82,24 @@ class Enemy:
         self.width, self.height = self.image.get_size()
 
         self.active = active
+        self.rate_of_fire = rate_of_fire 
 
         self.projectiles = ProjectilePool(10,direction=-1)
+        self.time_till_last_proj = rate_of_fire
+
+        self.health = 50
 
 
     def update(self, dt):
         if self.active:
+            self.time_till_last_proj += dt
             self.projectiles.update(dt)
+            
+
+            if self.time_till_last_proj < self.rate_of_fire:
+                return
+            self.shoot()
+            self.time_till_last_proj = 0
     
     def move(self, dx, dy):
         if self.active:
@@ -90,16 +117,18 @@ class Enemy:
     
     def get_rect(self):
         return pygame.Rect(self.x, self.y, self.width, self.height)
+    
 
 
 
 class EnemySpawner:
-    def __init__(self,start_x, end_x, speed=1, rate_of_fire=180, dx = 1, size=10) -> None:
+    def __init__(self,start_x, end_x, game_height, speed=1, rate_of_fire=180, dx = 1, size=10) -> None:
         self.start_x = start_x
         self.end_x = end_x
         self.speed = speed
         self.rate_of_fire = rate_of_fire
         self.size = size
+        self.game_height = game_height
         
         self.dx = dx
         self.dir = 1
@@ -108,14 +137,21 @@ class EnemySpawner:
         self.enemies = [ Enemy(randint(self.start_x,self.end_x), 0) for i in range(size)]
         self.time_till_last_spawn = 180
         self.cur_enemy : int = 0
+
+        self.health_player=100
     
     def update(self, dt):
         self.time_till_last_spawn  += dt
         for e in self.enemies:
             if e.active:
                 e.move(0, self.speed)
+                e.update(dt)
+
+                if e.y > self.game_height- e.height:
+                    return True
 
         self.create_enemy()
+        return False
 
     def draw(self, win : pygame.Surface):
         for e in self.enemies:
@@ -131,19 +167,25 @@ class EnemySpawner:
         self.cur_enemy = (self.cur_enemy+1)%self.size
         
 
-    def damage_enemy(self, laser_rect : pygame.Rect):
-        i = laser_rect.collidelist([ e.get_rect() for e in self.enemies])
-        if i != -1:
-            # self.enemies.pop(i)
-            return True
-        return False
+    def damage(self, rect : pygame.Rect, damage : int):
         
+        collided=rect.collidelist([e.get_rect() for e in self.enemies])
+        if collided != -1:
+            self.enemies[collided].health -= damage
+            if self.enemies[collided].health <= 0:
+                self.enemies[collided].active = False
+                self.enemies[collided].x = randint(self.start_x,self.end_x)
+                self.enemies[collided].y = 0
+                self.enemies[collided].health = 50
+        return collided != -1
+    
 
 
 class Projectile:
     def __init__(self, speed, direction, active=False, image="images\laser.png") -> None:
         self.x = 0
         self.y = 0
+        self.damage = 25
         self.speed = speed
         self.active = active
         self.image = pygame.image.load(image).convert()
@@ -154,7 +196,8 @@ class Projectile:
             win.blit(self.image, (self.x, self.y))
     
     def update(self, dt):
-        self.y -= dt*self.speed*self.direction
+        if self.active:
+            self.y -= dt*self.speed*self.direction
     
     def get_rect(self):
         return pygame.Rect(self.x, self.y, *self.image.get_size())
@@ -199,4 +242,6 @@ class ProjectilePool:
             if p.active:
                 p.draw(win)
 
+    def get_all(self):
+        return self.projectiles
 
