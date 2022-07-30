@@ -159,7 +159,7 @@ class ProjectilePool:
 
     def draw(self, win):
         for p in self.projectiles:
-            # if p.active:
-            p.draw(win)
+            if p.active:
+                p.draw(win)
 
 
