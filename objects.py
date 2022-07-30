@@ -14,7 +14,6 @@ class Player:
         self.RIGHT = False
         self.LEFT = False
 
-        self.projectiles : List[Projectile] = [Projectile(0, 0, 15) for _ in range(5)]
     
     def move(self, right, left):
         self.RIGHT = right
@@ -41,23 +40,21 @@ class Player:
     def draw(self, win : pygame.Surface):
         pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y,60, 30))
 
-        for p in self.projectiles:
-            p.draw(win)
     
     def shoot(self):
         pass
 
 
 class Projectile:
-    def __init__(self, x, y, speed, visible=False, image="images/laser.png") -> None:
-        self.x = x
-        self.y = y
+    def __init__(self, speed, active=False, image="images\laser.png") -> None:
+        self.x = 0
+        self.y = 0
         self.speed = speed
-        self.visible = False
-        self.image = pygame.image.load(image).convert()
+        self.active = active
+        self.image = pygame.image.load(image)
     
     def draw(self, win : pygame.Surface):
-        if self.visible:
+        if self.active:
             win.blit(self.image, (self.x, self.y))
     
     def update(self, dt):
@@ -65,3 +62,36 @@ class Projectile:
     
     def get_rect(self):
         return pygame.Rect(self.x, self.y, *self.image.get_size())
+    
+    def set_pos(self, x, y):
+        self.x = x 
+        self.y = y 
+
+
+class ProjectilePool:
+    def __init__(self, size : int) -> None:
+        self.size = size
+        self.projectiles : List[Projectile] = [Projectile(3) for _ in range(size)]
+        self.cur_projectile = 0
+    
+    def create(self, x, y):
+        self.projectiles[self.cur_projectile].set_pos(x,y)
+        self.projectiles[self.cur_projectile].active = True
+        self.cur_projectile = (self.cur_projectile+1)%self.size
+
+    def destroy(self, cur_projectile : int):
+        self.projectiles[cur_projectile].active = False
+
+    def update(self, dt : float):
+        for i, p in enumerate(self.projectiles):
+            active = p.active
+            if active and p.y > 0:
+                p.update(dt)
+            else:
+                self.destroy(i)
+
+    def draw(self, win):
+        for p in self.projectiles:
+            if p.active:
+                p.draw(win)
+    
