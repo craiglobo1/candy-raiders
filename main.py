@@ -1,6 +1,6 @@
 from operator import imod
 import pygame
-from objects import Player, Enemy
+from objects import EnemySpawner, Player, Enemy
 from button import Button
 
 size = width, height  = 700, 800
@@ -16,7 +16,7 @@ class Game:
     
     def new(self):
         self.player = Player(width*0.05, height*0.9)
-        self.enemy = Enemy(width*0.05, height*0.1)
+        self.enemies = EnemySpawner(self.player.image.get_width(), width- self.player.image.get_width())
         self.run()
 
     def main_menu(self,win):
@@ -83,19 +83,23 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.player.shoot()
-                    self.enemy.move(5,5)
-                    self.enemy.shoot()
         
         self.player.move(keys[pygame.K_RIGHT]|keys[pygame.K_d], keys[pygame.K_LEFT]|keys[pygame.K_a])
         
 
     def update(self):
-        self.enemy.update(self.dt)
+        self.enemies.update(self.dt)
         self.player.update(self.dt)
+
+        # for i,p in enumerate(self.player.projectiles.projectiles):
+        #     # hit = self.enemies.kill_enemy(p.get_rect())
+        #     if hit:
+        #         self.player.projectiles.pop(i)
+        #         break
         
 
     def draw(self):
-        self.enemy.draw(self.win)
+        self.enemies.draw(self.win)
         self.player.draw(self.win)
         pygame.display.flip()
         self.win.fill(0)

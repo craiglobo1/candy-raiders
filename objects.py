@@ -1,5 +1,7 @@
 import pygame
+from random import randint
 from typing import List 
+
 
 class Player:
     def __init__(self, x, y, acc=0, drag=-0.09,max_dx=4) -> None:
@@ -55,7 +57,7 @@ class Player:
 
 
 class Enemy:
-    def __init__(self, x, y, image="images\candy_monster.png") -> None:
+    def __init__(self, x, y, active=False,image="images\candy_monster.png") -> None:
         self.x = x
         self.y = y
         self.image = pygame.image.load(image)
@@ -63,45 +65,80 @@ class Enemy:
         self.image = pygame.transform.scale(self.image, (self.width*0.3, self.height*0.3))
         self.width, self.height = self.image.get_size()
 
+        self.active = active
+
         self.projectiles = ProjectilePool(10,direction=-1)
 
 
     def update(self, dt):
-
-        self.projectiles.update(dt)
+        if self.active:
+            self.projectiles.update(dt)
     
     def move(self, dx, dy):
-        self.x += dx
-        self.y += dy 
+        if self.active:
+            self.x += dx
+            self.y += dy 
     
     def draw(self, win : pygame.Surface):
-        win.blit(self.image, (self.x, self.y))
-
-        self.projectiles.draw(win)
-
+        if self.active:
+            win.blit(self.image, (self.x, self.y))
+            self.projectiles.draw(win)
     
     def shoot(self):
-        self.projectiles.create(self.x + self.width*0.5, self.y + self.height + 10)
+        if self.active:
+            self.projectiles.create(self.x + self.width*0.5, self.y + self.height + 10)
+    
+    def get_rect(self):
+        return pygame.Rect(self.x, self.y, self.width, self.height)
 
 
 
 class EnemySpawner:
-    def __init__(self,start_x, end_x , dx = 1) -> None:
-        self.start_x = start_x 
+    def __init__(self,start_x, end_x, speed=1, rate_of_fire=180, dx = 1, size=10) -> None:
+        self.start_x = start_x
         self.end_x = end_x
+        self.speed = speed
+        self.rate_of_fire = rate_of_fire
+        self.size = size
         
         self.dx = dx
         self.dir = 1
         self.dy = 0
+
+        self.enemies = [ Enemy(randint(self.start_x,self.end_x), 0) for i in range(size)]
+        self.time_till_last_spawn = 180
+        self.cur_enemy : int = 0
     
     def update(self, dt):
-        pass
+        self.time_till_last_spawn  += dt
+        for e in self.enemies:
+            if e.active:
+                e.move(0, self.speed)
+
+        self.create_enemy()
 
     def draw(self, win : pygame.Surface):
-        pass
+        for e in self.enemies:
+            if e.active:
+                e.draw(win)
 
-    def kill_enemy(self, rect : pygame.Rect):
-        pass
+    def create_enemy(self):
+        if self.time_till_last_spawn < self.rate_of_fire:
+            return
+        
+        self.time_till_last_spawn = 0
+        self.enemies[self.cur_enemy].active = True
+        self.cur_enemy = (self.cur_enemy+1)%self.size
+        
+
+    def damage_enemy(self, laser_rect : pygame.Rect):
+        i = laser_rect.collidelist([ e.get_rect() for e in self.enemies])
+        if i != -1:
+            # self.enemies.pop(i)
+            return True
+        return False
+        
+
 
 class Projectile:
     def __init__(self, speed, direction, active=False, image="images\laser.png") -> None:
