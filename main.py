@@ -1,6 +1,6 @@
 from operator import imod
 import pygame
-from objects import Player
+from objects import Enemy, Player
 
 size = width, height  = 700, 800
 FPS = 60

@@ -54,13 +54,45 @@ class Player:
     
 
 
+class Enemy:
+    def __init__(self, x, y) -> None:
+        self.x = x
+        self.y = y
+        self.width = 60
+        self.height = 30
+
+        self.RIGHT = False
+        self.LEFT = False
+
+        self.projectiles = ProjectilePool(10, direction=1)
+
+
+    def update(self, dt):
+
+        self.projectiles.update(dt)
+    
+    def move(self, dx, dy):
+        self.x += dx
+        self.y += dy 
+    
+    def draw(self, win : pygame.Surface):
+        pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y, self.width, self.height))
+
+        self.projectiles.draw(win)
+
+    
+    def shoot(self):
+        self.projectiles.create(self.x + self.width*0.5, self.y + self.height + 10)
+
+
 class Projectile:
-    def __init__(self, speed, active=False, image="images\laser.png") -> None:
+    def __init__(self, speed, direction=-1, active=False, image="images\laser.png") -> None:
         self.x = 0
         self.y = 0
         self.speed = speed
         self.active = active
         self.image = pygame.image.load(image)
+        self.direction = direction
     
     def draw(self, win : pygame.Surface):
         if self.active:
@@ -68,7 +100,7 @@ class Projectile:
     
     def update(self, dt):
         if self.active:
-            self.y -= dt*self.speed
+            self.y += dt*self.speed*self.direction
     
     def get_rect(self):
         return pygame.Rect(self.x, self.y, *self.image.get_size())
@@ -79,9 +111,9 @@ class Projectile:
 
 
 class ProjectilePool:
-    def __init__(self, size : int, rate_of_fire : float = 30) -> None:
+    def __init__(self, size : int, rate_of_fire : float = 30, direction = -1) -> None:
         self.size = size
-        self.projectiles : List[Projectile] = [Projectile(3) for _ in range(size)]
+        self.projectiles : List[Projectile] = [Projectile(3,direction) for _ in range(size)]
         self.cur_projectile = 0
         self.rate_of_fire = rate_of_fire
         self.time_till_last_fire = rate_of_fire
