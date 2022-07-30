@@ -1,4 +1,5 @@
 import pygame
+from typing import List 
 
 class Player:
     def __init__(self, x, y, acc=0, drag=-0.09,max_dx=4) -> None:
@@ -12,6 +13,8 @@ class Player:
 
         self.RIGHT = False
         self.LEFT = False
+
+        self.projectiles : List[Projectile] = [Projectile(0, 0, 15) for _ in range(5)]
     
     def move(self, right, left):
         self.RIGHT = right
@@ -37,3 +40,27 @@ class Player:
     
     def draw(self, win : pygame.Surface):
         pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y,60, 30))
+
+        for p in self.projectiles:
+            p.draw(win)
+    
+    def shoot(self)
+
+
+class Projectile:
+    def __init__(self, x, y, speed, visible=False, image="images/laser.png") -> None:
+        self.x = x
+        self.y = y
+        self.speed = speed
+        self.visible = False
+        self.image = pygame.image.load(image).convert()
+    
+    def draw(self, win : pygame.Surface):
+        if self.visible:
+            win.blit(self.image, (self.x, self.y))
+    
+    def update(self, dt):
+        self.y -= dt*self.speed
+    
+    def get_rect(self):
+        return pygame.Rect(self.x, self.y, *self.image.get_size())
