@@ -9,6 +9,6 @@
     },
     "candy_ship":{
         "duration" : [1],
-        "scale" : 0.8
+        "scale" : 0.6
     }
 }

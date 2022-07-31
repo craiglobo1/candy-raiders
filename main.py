@@ -109,6 +109,7 @@ class Game:
 
             pygame.draw.rect(self.win,rect_colour, middle_rect, width == 1, border_radius=10)
             pygame.draw.rect(self.win,rect_colour, end_rect, width == 1, border_radius=10)
+            background.set_alpha(150)
             self.win.blit(background,(0,0))
             self.win.blit(game_title,(50,100))
             self.win.blit(play_font,(225,300))
@@ -201,6 +202,7 @@ class Game:
 
     def draw(self):
         game_background = pygame.image.load('data/images/game_background.png')
+        game_background.set_alpha(100)
         self.win.blit(game_background,(0,0))
         self.enemies.draw(self.win)
         self.player.draw(self.win)
