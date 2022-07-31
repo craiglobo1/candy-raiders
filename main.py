@@ -19,7 +19,7 @@ class Game:
         self.new_game()
 
     def new_game(self):
-        self.player = Player(width*0.05, height*0.9)
+        self.player = Player(width*0.05, height*0.85)
         self.enemies = EnemySpawner(self.player.image.get_width(), width- self.player.image.get_width(),height)
         self.end_screen = False
         self.run()

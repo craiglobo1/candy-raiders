@@ -3,6 +3,19 @@ from random import randint
 from typing import List 
 
 
+class HealthBar:
+    def __init__(self, x, y, width, height, health=100) -> None:
+        self.image = pygame.Surface((width,height))
+        self.x = x
+        self.y = y
+        self.health = 100
+    
+    def draw(self, win : pygame.Surface):
+        self.bar = pygame.Surface((self.health,height))
+        self.image.blit()
+        win.blit(self.image, (self.x, self.y))
+
+
 class Player:
     def __init__(self, x, y, acc=0, drag=-0.09,max_dx=4) -> None:
         self.x = x
@@ -245,3 +258,7 @@ class ProjectilePool:
     def get_all(self):
         return self.projectiles
 
+
+class Animator:
+    def __init__(self, sprites_path, init_state, scale=0.3) -> None:
+        pass
