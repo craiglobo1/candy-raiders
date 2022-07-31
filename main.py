@@ -20,7 +20,7 @@ class Game:
 
     def new_game(self):
         self.player = Player(width*0.05, height*0.85)
-        self.enemies = EnemySpawner(self.player.image.get_width(), width- self.player.image.get_width(),height)
+        self.enemies = EnemySpawner(self.player.animator.get_size()[0], width- self.player.animator.get_size()[1],height)
         self.end_screen = False
         self.run()
 
@@ -190,7 +190,7 @@ class Game:
                     if hit:
                         l.active = False
         
-        if self.player.health < 0:
+        if self.player.health.get_health() <= 0:
             self.end_screen = True
     
 

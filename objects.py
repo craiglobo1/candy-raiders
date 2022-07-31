@@ -5,16 +5,21 @@ import json
 import os
 
 class HealthBar:
-    def __init__(self, x, y, width, height, health=100) -> None:
-        self.image = pygame.Surface((width,height))
-        self.x = x
-        self.y = y
+    def __init__(self, width, height, health=100) -> None:
+        self.width = width
+        self.height = height
         self.health = 100
     
-    def draw(self, win : pygame.Surface):
-        self.bar = pygame.Surface((self.health,self.width))
-        self.image.blit()
-        win.blit(self.image, (self.x, self.y))
+    def draw(self, win : pygame.Surface, x, y):
+        image = pygame.Surface((self.width, self.height))
+        pygame.draw.rect(image, (0, 153, 51), pygame.Rect(0,0,self.width*self.health*.01, self.height))
+        win.blit(image, (x, y))
+    
+    def get_health(self):
+        return self.health
+    
+    def damaged(self, damage):
+        self.health -= damage
 
 
 class Player:
@@ -22,13 +27,12 @@ class Player:
         self.x = x
         self.y = y
 
-        self.image = pygame.image.load("data/sprites/candy_ship/candy_ship.png")
         self.animator = Animator("data\sprites", "candy_ship")
 
-        self.width, self.height = self.image.get_size()
+        self.width, self.height = self.animator.get_size()
         self.dx = 0
 
-        self.health = 100
+        self.health = HealthBar(self.width, 10, 100)
 
         self.acc = acc
         self.drag = drag
@@ -37,8 +41,7 @@ class Player:
         self.RIGHT = False
         self.LEFT = False
 
-        self.projectiles = ProjectilePool(10, direction=1)
-        self.health = 100
+        self.projectiles = ProjectilePool(10,"data\projectiles\candy-projectile.png", direction=1)
     
     def move(self, right, left):
         self.RIGHT = right
@@ -66,7 +69,8 @@ class Player:
         
     
     def draw(self, win : pygame.Surface):
-        win.blit(self.image, (self.x, self.y))
+        win.blit(self.animator.get_frame(), (self.x, self.y))
+        self.health.draw(win, self.x, self.y + self.height)
         # pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y, self.width, self.height))
 
         self.projectiles.draw(win)
@@ -78,7 +82,7 @@ class Player:
         
         collided = rect.colliderect(self.get_rect())
         if collided:
-            self.health -= damage
+            self.health.damaged(damage)
 
         return collided
     
@@ -100,7 +104,7 @@ class Enemy:
         self.active = active
         self.rate_of_fire = rate_of_fire 
 
-        self.projectiles = ProjectilePool(10,direction=-1)
+        self.projectiles = ProjectilePool(10,"data\projectiles\candy_goo_projectile.png",direction=-1)
         self.time_till_last_proj = rate_of_fire
 
         self.health = 50
@@ -139,7 +143,7 @@ class Enemy:
 
 
 class EnemySpawner:
-    def __init__(self,start_x, end_x, game_height, speed=1, rate_of_fire=180, dx = 1, size=10) -> None:
+    def __init__(self,start_x, end_x, game_height, speed=1, rate_of_fire=200, dx = 1, size=10) -> None:
         self.start_x = start_x
         self.end_x = end_x
         self.speed = speed
@@ -208,7 +212,7 @@ class Projectile:
         self.damage = 25
         self.speed = speed
         self.active = active
-        self.image = pygame.image.load(image).convert()
+        self.image = pygame.image.load(image)
         self.direction = direction
     
     def draw(self, win : pygame.Surface):
@@ -221,6 +225,9 @@ class Projectile:
     
     def get_rect(self):
         return pygame.Rect(self.x, self.y, *self.image.get_size())
+
+    def get_size(self):
+        return self.image.get_size()
     
     def set_pos(self, x, y):
         self.x = x 
@@ -228,9 +235,9 @@ class Projectile:
 
 
 class ProjectilePool:
-    def __init__(self, size : int, rate_of_fire : float = 30, direction = -1) -> None:
+    def __init__(self, size : int, img_file,  rate_of_fire : float = 30,  direction = -1) -> None:
         self.size = size
-        self.projectiles : List[Projectile] = [Projectile(3,direction) for _ in range(size)]
+        self.projectiles : List[Projectile] = [Projectile(3,direction,image=img_file) for _ in range(size)]
         self.cur_projectile = 0
         self.rate_of_fire = rate_of_fire
         self.time_till_last_fire = rate_of_fire
@@ -240,7 +247,7 @@ class ProjectilePool:
             return
 
 
-        self.projectiles[self.cur_projectile].set_pos(x,y)
+        self.projectiles[self.cur_projectile].set_pos(x-self.projectiles[0].get_size()[0]*.5,y)
         self.projectiles[self.cur_projectile].active = True
         self.cur_projectile = (self.cur_projectile+1)%self.size
         self.time_till_last_fire = 0
