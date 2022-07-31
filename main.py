@@ -53,11 +53,12 @@ class Game:
 
 
         game_title= pygame.image.load('images/game-title.png')
-        rules_font = pygame.image.load('images/rules-font.png')
+        rules_font = pygame.image.load('images/rules_button.png')
         quit_font = pygame.image.load('images/quit-font.png')
         play_font = pygame.image.load('images/play_button.png')
         infinite = pygame.image.load('images/infinite_button.png')
         timed = pygame.image.load('images/timed_button.png')
+        background = pygame.image.load('images/background_still.png')
         control_font = pygame.font.SysFont('agencyfb',100 )
         minor_control_font = pygame.font.SysFont('agencyfb',60 )
         minor_controls_text = control_font.render('Controls',True,rect_colour)
@@ -95,6 +96,7 @@ class Game:
 
             pygame.draw.rect(self.win,rect_colour, middle_rect, width == 1, border_radius=10)
             pygame.draw.rect(self.win,rect_colour, end_rect, width == 1, border_radius=10)
+            self.win.blit(background,(0,0))
             self.win.blit(game_title,(50,100))
             self.win.blit(play_font,(225,300))
             self.win.blit(rules_font,(290,425))
