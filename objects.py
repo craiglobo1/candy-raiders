@@ -1,7 +1,8 @@
 import pygame
 from random import randint
 from typing import List 
-
+import json
+import os
 
 class HealthBar:
     def __init__(self, x, y, width, height, health=100) -> None:
@@ -22,6 +23,7 @@ class Player:
         self.y = y
 
         self.image = pygame.image.load("data/sprites/candy_ship/candy_ship.png")
+        self.animator = Animator("data\sprites", "candy_ship")
 
         self.width, self.height = self.image.get_size()
         self.dx = 0
@@ -44,6 +46,7 @@ class Player:
 
     def update(self, dt):
         self.projectiles.update(dt)
+        self.animator.update(dt)
 
         self.acc = 0
         if self.RIGHT:
@@ -89,10 +92,10 @@ class Enemy:
     def __init__(self, x, y, rate_of_fire=150, active=False,image="data\sprites\monster_idle\candy_monster.png") -> None:
         self.x = x
         self.y = y
-        self.image = pygame.image.load(image)
-        self.width, self.height = self.image.get_size()
-        self.image = pygame.transform.scale(self.image, (int(self.width*0.3), int(self.height*0.3)))
-        self.width, self.height = self.image.get_size()
+
+        self.animator = Animator("data\sprites", "monster_idle")
+        self.width, self.height = self.animator.get_size()
+
 
         self.active = active
         self.rate_of_fire = rate_of_fire 
@@ -107,6 +110,7 @@ class Enemy:
         if self.active:
             self.time_till_last_proj += dt
             self.projectiles.update(dt)
+            self.animator.update(dt)
             
 
             if self.time_till_last_proj < self.rate_of_fire:
@@ -121,7 +125,7 @@ class Enemy:
     
     def draw(self, win : pygame.Surface):
         if self.active:
-            win.blit(self.image, (self.x, self.y))
+            win.blit(self.animator.get_frame(), (self.x, self.y))
             self.projectiles.draw(win)
     
     def shoot(self):
@@ -185,6 +189,9 @@ class EnemySpawner:
         collided=rect.collidelist([e.get_rect() for e in self.enemies])
         if collided != -1:
             self.enemies[collided].health -= damage
+            if self.enemies[collided].health <= 25:
+                self.enemies[collided].animator.cur_state = "monster_hurt"
+
             if self.enemies[collided].health <= 0:
                 self.enemies[collided].active = False
                 self.enemies[collided].x = randint(self.start_x,self.end_x)
@@ -260,5 +267,36 @@ class ProjectilePool:
 
 
 class Animator:
-    def __init__(self, sprites_path, init_state, scale=0.3) -> None:
-        pass
+    def __init__(self, sprites_path, init_state) -> None:
+        self.anim_data = json.load(open(os.path.join(sprites_path,'anim_data.json')))
+        self.images = {}
+        self.cur_state = init_state
+
+        self.dt = 0.0
+        self.frame = 0
+        # load sprites as animation folders in a dictionary
+        for folder in os.listdir(sprites_path):
+            if folder != "anim_data.json":
+                self.images[folder] = []
+                for img_file in os.listdir(os.path.join(sprites_path, folder)):
+                    img = pygame.image.load(os.path.join(sprites_path, folder, img_file))
+                    img_scale = self.anim_data[folder]["scale"]
+                    img = pygame.transform.scale(img, (img.get_width()*img_scale, img.get_height()*img_scale))
+                    self.images[folder].append(img)
+
+    
+    def next_frame(self):
+        self.frame = (self.frame + 1) % len(self.images[self.cur_state])
+    
+    def update(self, dt):
+        self.dt += dt*(1/60)
+        if self.dt >= self.anim_data[self.cur_state]["duration"][self.frame]:
+            self.next_frame()
+            self.dt = 0
+
+    def get_frame(self):
+        return self.images[self.cur_state][self.frame]
+    
+    def get_size(self):
+        return self.images[self.cur_state][self.frame].get_size()
+

@@ -1,6 +1,6 @@
 from operator import imod
 import pygame
-from objects import EnemySpawner, Player, Enemy
+from objects import EnemySpawner, Player, Animator
 from button import Button
 
 size = width, height  = 700, 800
@@ -28,6 +28,7 @@ class Game:
         pygame.mixer.music.load('music/background_music.wav')
         pygame.mixer.music.set_volume(1)
         pygame.mixer.music.play(-1)
+
         rect = pygame.Rect(225,300,250,75)
         middle_rect = pygame.Rect(225,420,250,75)
         end_rect = pygame.Rect(225,540,250,75)
