@@ -22,9 +22,12 @@ class Game:
         self.player = Player(width*0.05, height*0.85)
         self.enemies = EnemySpawner(self.player.image.get_width(), width- self.player.image.get_width(),height)
         self.end_screen = False
+        self.frame_count = 0
+
         self.run()
 
     def main_menu(self,win):
+        
         pygame.mixer.music.load('music/background_music.wav')
         pygame.mixer.music.set_volume(1)
         pygame.mixer.music.play(-1)
@@ -171,6 +174,7 @@ class Game:
         
 
     def update(self):
+        
         end_game = self.enemies.update(self.dt)
         if end_game:
             self.end_screen = True
@@ -192,11 +196,24 @@ class Game:
         
         if self.player.health < 0:
             self.end_screen = True
-    
+
+            
+        
+        
+        self.total_seconds = 120 - (self.frame_count // FPS)
+        if self.total_seconds < 0:
+            self.total_seconds = 0
+        self.frame_count+=1
 
     def draw(self):
         self.enemies.draw(self.win)
         self.player.draw(self.win)
+        
+        output_string = "Timer: {0:02}:{1:02}".format(self.total_seconds // 60, self.total_seconds % 60)
+        font = pygame.font.Font(None, 35)
+        text = font.render(output_string, True, (255,255,255))
+        self.win.blit(text, (width/2 - text.get_width()*.5,5))
+
 
         if self.end_screen:
             blue_colour = (175,242,255)
@@ -216,13 +233,19 @@ class Game:
             bg_black.blit(main_menu_text, (245,420))
             bg_black.blit(quit_text, (305,540))
             self.win.blit(bg_black, (0,0))
+            
+           
         pygame.display.flip()
         self.win.fill(0)
 
-    def draw_text(self, win, text, pos, font):
-        
-        img = font.render(text, True, (255,255,255))
-        win.blit(img, pos)
+
+
+        def draw_text(self, win, text, pos, font):
+            
+            img = font.render(text, True, (255,255,255))
+            win.blit(img, pos)
+         
+
 
 
 game = Game()
