@@ -54,7 +54,7 @@ class Game:
         play_exit_button = Button(525,115,60,60,rules_surface)
         infinite_button = Button(225,400,250,75,game_mode_surface)
         timed_button = Button(225,500,250,75,game_mode_surface)
-
+        quit_box = pygame.image.load("data/buttons/close_button.png")
 
         game_title= pygame.image.load("data/images/game-title.png")
         background = pygame.image.load('data/images/background_still.png')
@@ -95,7 +95,7 @@ class Game:
                             pass
                         
             
-            music_pic = pygame.image.load('data/buttons/music_note_button.png')
+            music_pic = pygame.image.load('data/buttons/music_button_toggled.png')
             self.win.blit(music_pic,(600,10))
 
             pygame.draw.rect(self.win,rect_colour, middle_rect, width == 1, border_radius=10)
@@ -105,7 +105,6 @@ class Game:
             self.win.blit(play_font,(225,300))
             self.win.blit(rules_font,(225,425))
             self.win.blit(quit_font,(225,540))
-            music_pic = pygame.image.load('images/music_button_toggled.png')
             self.win.blit(music_pic,(600,10))
             game_mode_surface.blit(infinite, (225,400))
             game_mode_surface.blit(timed, (225,500))
