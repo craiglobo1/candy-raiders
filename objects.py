@@ -281,7 +281,7 @@ class Animator:
                 for img_file in os.listdir(os.path.join(sprites_path, folder)):
                     img = pygame.image.load(os.path.join(sprites_path, folder, img_file))
                     img_scale = self.anim_data[folder]["scale"]
-                    img = pygame.transform.scale(img, (img.get_width()*img_scale, img.get_height()*img_scale))
+                    img = pygame.transform.scale(img, (int(img.get_width()*img_scale), int(img.get_height()*img_scale)))
                     self.images[folder].append(img)
 
     
