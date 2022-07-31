@@ -36,13 +36,11 @@ class Game:
         background_colour = (255,97,97)
         rules_surface.fill(background_colour)
         game_mode_surface.fill(background_colour)
-        rule_rect = pygame.Rect(100,100,500,600)
+        rule_rect = pygame.Rect(100,100,500,560)
         popup_colour = (175,242,255)
         rect_colour=(255,97,97)
         pygame.draw.rect(rules_surface, popup_colour, rule_rect, width == 1, border_radius=10)
-        pygame.draw.circle(rules_surface,(255,97,97), (550,150), 30 )
         pygame.draw.rect(game_mode_surface, popup_colour, rule_rect, width == 1, border_radius=10)
-        pygame.draw.circle(game_mode_surface,rect_colour, (550,150), 30 )
         game_popup = False
 
         rules_popup =False
@@ -51,7 +49,7 @@ class Game:
         play_button = Button(225,300,250,75,self.win)
         rule_button = Button(225,420,250,75,self.win)
         quit_button = Button(225,540,250,75,self.win)
-        music_button = Button(600,10,64,64,self.win)
+        music_button = Button(600,10,80,80,self.win)
         rule_exit_button = Button(525,115,60,60,rules_surface)
         play_exit_button = Button(525,115,60,60,rules_surface)
         infinite_button = Button(225,400,250,75,game_mode_surface)
@@ -60,11 +58,12 @@ class Game:
 
         game_title= pygame.image.load('images/game-title.png')
         rules_font = pygame.image.load('images/rules_button.png')
-        quit_font = pygame.image.load('images/quit-font.png')
+        quit_font = pygame.image.load('images/quit_button.png')
         play_font = pygame.image.load('images/play_button.png')
         infinite = pygame.image.load('images/infinite_button.png')
         timed = pygame.image.load('images/timed_button.png')
         background = pygame.image.load('images/background_still.png')
+        quit_box = pygame.image.load('images/close_button.png')
         control_font = pygame.font.SysFont('agencyfb',100 )
         minor_control_font = pygame.font.SysFont('agencyfb',60 )
         minor_controls_text = control_font.render('Controls',True,rect_colour)
@@ -97,19 +96,20 @@ class Game:
                             pass
                         
             
-            music_pic = pygame.image.load('images/music_note.png')
-            self.win.blit(music_pic,(600,10))
 
             pygame.draw.rect(self.win,rect_colour, middle_rect, width == 1, border_radius=10)
             pygame.draw.rect(self.win,rect_colour, end_rect, width == 1, border_radius=10)
             self.win.blit(background,(0,0))
             self.win.blit(game_title,(50,100))
             self.win.blit(play_font,(225,300))
-            self.win.blit(rules_font,(290,425))
-            self.win.blit(quit_font,(290,540))
+            self.win.blit(rules_font,(225,425))
+            self.win.blit(quit_font,(225,540))
+            music_pic = pygame.image.load('images/music_button_toggled.png')
+            self.win.blit(music_pic,(600,10))
             game_mode_surface.blit(infinite, (225,400))
             game_mode_surface.blit(timed, (225,500))
             rules_surface.blit(controls_text,(220,100))
+            rules_surface.blit(quit_box,(525,115))
 
             if rules_popup:
                 self.win.blit(rules_surface, (0,0))
