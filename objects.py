@@ -11,7 +11,7 @@ class HealthBar:
         self.health = 100
     
     def draw(self, win : pygame.Surface):
-        self.bar = pygame.Surface((self.health,height))
+        self.bar = pygame.Surface((self.health,self.width))
         self.image.blit()
         win.blit(self.image, (self.x, self.y))
 
