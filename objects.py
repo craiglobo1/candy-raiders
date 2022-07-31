@@ -91,7 +91,7 @@ class Enemy:
         self.y = y
         self.image = pygame.image.load(image)
         self.width, self.height = self.image.get_size()
-        self.image = pygame.transform.scale(self.image, (self.width*0.3, self.height*0.3))
+        self.image = pygame.transform.scale(self.image, (int(self.width*0.3), int(self.height*0.3)))
         self.width, self.height = self.image.get_size()
 
         self.active = active
