@@ -2,6 +2,7 @@ from operator import imod
 import pygame
 from objects import EnemySpawner, Player, Animator
 from button import Button
+from sound import Sound
 
 size = width, height  = 700, 800
 FPS = 60
@@ -54,10 +55,10 @@ class Game:
         music_button = Button(600,10,80,80,self.win)
         rule_exit_button = Button(525,115,80,80,rules_surface)
         play_exit_button = Button(525,115,80,80,rules_surface)
-        infinite_button = Button(225,400,275,90,game_mode_surface)
+        infinite_button = Button(225,400,280,105,game_mode_surface)
         timed_button = Button(225,500,275,90,game_mode_surface)
         quit_box = pygame.image.load("data/buttons/close_button.png")
-        game_title= pygame.image.load("data/images/game-title.png")
+        game_title= pygame.image.load("data/images/game_title.png")
         background = pygame.image.load('data/images/background_still.png')
         rules_font = pygame.image.load("data/buttons/rules_button.png")
         quit_font = pygame.image.load('data/buttons/quit_button.png')
@@ -82,21 +83,25 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if pygame.mouse.get_pressed()[0]:
                         if play_button.selected(*pos):
+                            #s = Sound('data/buttons/bubble-shoot.mp3')
+                            #s.play_sound()
                             game_popup = True
-                        if quit_button.selected(*pos):
+                        elif quit_button.selected(*pos):
                             self.playing = False
-                        if rule_button.selected(*pos):
+                        elif rule_button.selected(*pos):
                             rules_popup = True
-                        if music_button.selected(*pos):
+                        elif music_button.selected(*pos):
                             self.toggle_music()
-                        if rule_exit_button.selected(*pos):
-                           rules_popup = False
-                        if play_exit_button.selected(*pos):
-                           game_popup = False
-                        if infinite_button.selected(*pos):
-                            pass
-                        if timed_button.selected(*pos):
-                            pass
+                        if rules_popup == True:
+                            if rule_exit_button.selected(*pos):
+                                rules_popup = False
+                        if game_popup == True:
+                            if infinite_button.selected(*pos):
+                                return
+                            elif timed_button.selected(*pos):
+                                return
+                            elif play_exit_button.selected(*pos):
+                                game_popup = False
                         
             
             music_pic = pygame.image.load('data/buttons/music_button_toggled.png')
@@ -110,15 +115,15 @@ class Game:
             self.win.blit(rules_font,(225,425))
             self.win.blit(quit_font,(225,540))
             self.win.blit(music_pic,(600,10))
-            game_mode_surface.blit(infinite, (225,400))
-            game_mode_surface.blit(timed, (225,500))
-            game_mode_surface.blit(quit_box, (525,115))
             rules_surface.blit(controls_text,(100,100))
             rules_surface.blit(left_controls_text,(100,200))
             rules_surface.blit(right_controls_text,(100,300))
             rules_surface.blit(shoot_controls_text,(100,400))
             game_mode_surface.blit(mode_text, (100,200))
             rules_surface.blit(quit_box,(525,115))
+            game_mode_surface.blit(infinite, (225,400))
+            game_mode_surface.blit(timed, (225,500))
+            game_mode_surface.blit(quit_box, (525,115))
 
             if rules_popup:
                 self.win.blit(rules_surface, (0,0))
@@ -195,6 +200,8 @@ class Game:
     
 
     def draw(self):
+        game_background = pygame.image.load('data/images/game_background.png')
+        self.win.blit(game_background,(0,0))
         self.enemies.draw(self.win)
         self.player.draw(self.win)
 
@@ -205,17 +212,11 @@ class Game:
             end_rect = pygame.Rect(225,540,250,75)
             bg_black = pygame.Surface((width,height))
             bg_black.fill(blue_colour)
-            pygame.draw.rect(bg_black, button_colour, middle_rect, width == 1, border_radius=10)
-            pygame.draw.rect(bg_black, button_colour, end_rect, width == 1, border_radius=10)
-            title_font = pygame.font.SysFont('agencyfb',90 )
-            button_font = pygame.font.SysFont('agencyfb',60 )
+            title_font = pygame.font.SysFont('agencyfb',150 )
             game_over_text = title_font.render('Game Over!',True,button_colour)
-            main_menu_text = button_font.render('Main Menu',True,'white')
-            quit_text = button_font.render('Quit',True,'white')
-            bg_black.blit(game_over_text, (200,100))
-            bg_black.blit(main_menu_text, (245,420))
-            bg_black.blit(quit_text, (305,540))
+            bg_black.blit(game_over_text,(100,300))
             self.win.blit(bg_black, (0,0))
+
         pygame.display.flip()
         self.win.fill(0)
 
