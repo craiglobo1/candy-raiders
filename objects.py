@@ -11,7 +11,7 @@ class HealthBar:
         self.health = 100
     
     def draw(self, win : pygame.Surface):
-        self.bar = pygame.Surface((self.health,height))
+        self.bar = pygame.Surface((self.health,self.width))
         self.image.blit()
         win.blit(self.image, (self.x, self.y))
 
@@ -21,7 +21,7 @@ class Player:
         self.x = x
         self.y = y
 
-        self.image = pygame.image.load("images\candy_ship.png")
+        self.image = pygame.image.load("data/sprites/candy_ship/candy_ship.png")
 
         self.width, self.height = self.image.get_size()
         self.dx = 0
@@ -86,7 +86,7 @@ class Player:
 
 
 class Enemy:
-    def __init__(self, x, y, rate_of_fire=150, active=False,image="images\candy_monster.png") -> None:
+    def __init__(self, x, y, rate_of_fire=150, active=False,image="data\sprites\monster_idle\candy_monster.png") -> None:
         self.x = x
         self.y = y
         self.image = pygame.image.load(image)
@@ -195,7 +195,7 @@ class EnemySpawner:
 
 
 class Projectile:
-    def __init__(self, speed, direction, active=False, image="images\laser.png") -> None:
+    def __init__(self, speed, direction, active=False, image="data/projectiles/laser.png") -> None:
         self.x = 0
         self.y = 0
         self.damage = 25

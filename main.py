@@ -56,14 +56,13 @@ class Game:
         timed_button = Button(225,500,250,75,game_mode_surface)
 
 
-        game_title= pygame.image.load('images/game-title.png')
-        rules_font = pygame.image.load('images/rules_button.png')
-        quit_font = pygame.image.load('images/quit_button.png')
-        play_font = pygame.image.load('images/play_button.png')
-        infinite = pygame.image.load('images/infinite_button.png')
-        timed = pygame.image.load('images/timed_button.png')
-        background = pygame.image.load('images/background_still.png')
-        quit_box = pygame.image.load('images/close_button.png')
+        game_title= pygame.image.load("data/images/game-title.png")
+        background = pygame.image.load('data/images/background_still.png')
+        rules_font = pygame.image.load("data/buttons/rules_button.png")
+        quit_font = pygame.image.load('data/buttons/quit_button.png')
+        play_font = pygame.image.load('data/buttons/play_button.png')
+        infinite = pygame.image.load('data/buttons/infinite_button.png')
+        timed = pygame.image.load('data/buttons/timed_button.png')
         control_font = pygame.font.SysFont('agencyfb',100 )
         minor_control_font = pygame.font.SysFont('agencyfb',60 )
         minor_controls_text = control_font.render('Controls',True,rect_colour)
@@ -96,6 +95,8 @@ class Game:
                             pass
                         
             
+            music_pic = pygame.image.load('data/buttons/music_note_button.png')
+            self.win.blit(music_pic,(600,10))
 
             pygame.draw.rect(self.win,rect_colour, middle_rect, width == 1, border_radius=10)
             pygame.draw.rect(self.win,rect_colour, end_rect, width == 1, border_radius=10)
