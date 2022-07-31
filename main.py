@@ -166,11 +166,11 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.player.shoot()
-                if event.key == pygame.K_ESCAPE and self.end_screen:
+                if event.key == pygame.K_r and self.end_screen:
                     self.end_screen = False
                     self.new_game()
                     self.playing = False
-                if event.key == pygame.K_r and self.end_screen:
+                if event.key == pygame.K_ESCAPE and self.end_screen:
                     self.end_screen = False
                     self.main_menu(self.win)
                     self.playing = False
@@ -218,10 +218,18 @@ class Game:
         self.enemies.draw(self.win)
         self.player.draw(self.win)
         
-        output_string = "Timer: {0:02}:{1:02}".format(self.total_seconds // 60, self.total_seconds % 60)
+
+
+
+        output_string = f"{self.total_seconds//60:02}:{self.total_seconds%60:02}"
         font = pygame.font.Font(None, 35)
         text = font.render(output_string, True, (255,255,255))
-        self.win.blit(text, (width/2 - text.get_width()*.5,5))
+        pad = 15
+        timer_bg = pygame.Surface((text.get_width()+pad, text.get_height()+pad))
+        timer_bg.fill((106, 196, 142))
+        timer_bg.set_alpha(200)
+        timer_bg.blit(text, (pad//2,pad//2))
+        self.win.blit(timer_bg, (width//2-timer_bg.get_width()//2, 0))
 
 
         if self.end_screen:
