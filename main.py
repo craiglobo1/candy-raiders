@@ -1,6 +1,6 @@
 from operator import imod
 import pygame
-from objects import EnemySpawner, Player, Enemy
+from objects import EnemySpawner, Player, Animator
 from button import Button
 
 size = width, height  = 700, 800
@@ -28,6 +28,7 @@ class Game:
         pygame.mixer.music.load('music/background_music.wav')
         pygame.mixer.music.set_volume(1)
         pygame.mixer.music.play(-1)
+
         rect = pygame.Rect(225,300,250,75)
         middle_rect = pygame.Rect(225,420,250,75)
         end_rect = pygame.Rect(225,540,250,75)
@@ -52,7 +53,7 @@ class Game:
         music_button = Button(600,10,80,80,self.win)
         rule_exit_button = Button(525,115,60,60,rules_surface)
         play_exit_button = Button(525,115,60,60,rules_surface)
-        infinite_button = Button(225,400,250,75,game_mode_surface)
+        infinite_button = Button(225,400,250,75,game_mode_surface)  
         timed_button = Button(225,500,250,75,game_mode_surface)
         quit_box = pygame.image.load("data/buttons/close_button.png")
 
