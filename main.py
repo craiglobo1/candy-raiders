@@ -64,7 +64,7 @@ class Game:
         game_title= pygame.image.load("data/images/game_title.png")
         background = pygame.image.load('data/images/background_still.png')
         rules_font = pygame.image.load("data/buttons/rules_button.png")
-        quit_font = pygame.image.load('data/buttons/quit_button.png')got
+        quit_font = pygame.image.load('data/buttons/quit_button.png')
         play_font = pygame.image.load('data/buttons/play_button.png')
         infinite = pygame.image.load('data/buttons/infinite_button.png')
         timed = pygame.image.load('data/buttons/timed_button.png')
