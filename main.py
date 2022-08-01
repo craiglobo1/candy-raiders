@@ -1,6 +1,6 @@
 from operator import imod
 import pygame
-from objects import EnemySpawner, Player, Animator
+from objects import EnemySpawner, Player, Animator, SoundFX
 from button import Button
 import os, time
  
@@ -22,6 +22,7 @@ class Game:
         self.backround_music = pygame.mixer.Sound('music/background_music.wav')
         self.backround_music.set_volume(1)
         self.music_channel = self.backround_music.play(-1)
+        self.fx = SoundFX(self.music_channel, "sfx/")
     
     def new(self):
         self.main_menu()
@@ -149,7 +150,7 @@ class Game:
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    self.player.shoot()
+                    self.player.shoot(self.fx)
                 if event.key == pygame.K_r and self.end_screen:
                     self.end_screen = False
                     self.new_game()
@@ -175,7 +176,7 @@ class Game:
  
         for l in self.player.projectiles.get_all():
                 if l.active:
-                    hit = self.enemies.damage(l.get_rect(), l.damage)
+                    hit = self.enemies.damage(l.get_rect(), l.damage, self.fx)
                     if hit and not end_game:
                         self.times_enemy_damaged += 1
                         l.active = False
@@ -185,7 +186,7 @@ class Game:
         for e in self.enemies.enemies:
             for l in e.projectiles.get_all():
                 if l.active:
-                    hit = self.player.damage(l.get_rect(), l.damage)
+                    hit = self.player.damage(l.get_rect(), l.damage, self.fx)
                     if hit:
                         l.active = False
                         l.y = 0

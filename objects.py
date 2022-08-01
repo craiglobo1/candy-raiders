@@ -4,6 +4,17 @@ from typing import List
 import json
 import os
 
+class SoundFX:
+    def __init__(self, music_channel : pygame.mixer.Channel, fx_path : str) -> None:
+        self.music_channel = music_channel
+        self.sound_fx = {}
+        for file in os.listdir(fx_path):
+            self.sound_fx[file.split(".")[0]] = pygame.mixer.Sound(os.path.join(fx_path, file))
+
+    def play_sound(self, fx_name):
+        self.sound_fx[fx_name].play()
+
+
 class HealthBar:
     def __init__(self, width, height, health=100) -> None:
         self.width = width
@@ -74,14 +85,16 @@ class Player:
 
         self.projectiles.draw(win)
     
-    def shoot(self):
+    def shoot(self, fx : SoundFX):
         self.projectiles.create(self.x + self.width*0.5, self.y)
+        fx.play_sound("laser_shoot")
     
-    def damage(self, rect : pygame.Rect, damage : int):
+    def damage(self, rect : pygame.Rect, damage : int, fx : SoundFX):
         
         collided = rect.colliderect(self.get_rect())
         if collided:
             self.health.damaged(damage)
+            fx.play_sound("damaged")
 
         return collided
     
@@ -187,16 +200,18 @@ class EnemySpawner:
         self.cur_enemy = (self.cur_enemy+1)%self.size
         
 
-    def damage(self, rect : pygame.Rect, damage : int):
+    def damage(self, rect : pygame.Rect, damage : int, fx : SoundFX):
         
         collided=rect.collidelist([e.get_rect() for e in self.enemies])
         if collided != -1:
             self.enemies[collided].health -= damage
+            fx.play_sound("damaged")
             if self.enemies[collided].health <= 25:
                 self.enemies[collided].animator.cur_state = "monster_hurt"
 
             if self.enemies[collided].health <= 0:
                 self.enemies[collided] = Enemy(randint(self.start_x,self.end_x), 0)
+
         return collided != -1
     
 
@@ -307,6 +322,3 @@ class Animator:
         return self.images[self.cur_state][self.frame].get_size()
 
 
-class SoundFX:
-    def __init__(self) -> None:
-        pass
