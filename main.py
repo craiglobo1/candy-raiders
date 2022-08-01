@@ -12,6 +12,8 @@ class Game:
         pygame.init()
         self.win = pygame.display.set_mode(size,pygame.SRCALPHA)
         pygame.display.set_caption("Candy Raiders")
+        icon_surf = pygame.image.load("data\images\cr_icon.png")
+        pygame.display.set_icon(icon_surf)
         self.clock = pygame.time.Clock()
         self.font_roboto = pygame.font.Font("fonts\Roboto-Regular.ttf", 20)
     
@@ -39,13 +41,15 @@ class Game:
  
         self.playing = True
  
-        control_page = pygame.image.load("data/images/rules_popup.png")
-        cancel_box = pygame.image.load("data/buttons/cancel_button.png")
-        game_title= pygame.image.load("data/images/game_title.png")
         background = pygame.image.load('data/images/background_still.png')
+        game_title = pygame.image.load("data/images/game_title.png")
+
         play_font = pygame.image.load('data/buttons/play_button.png')
         rules_font = pygame.image.load("data/buttons/rules_button.png")
         quit_font = pygame.image.load('data/buttons/quit_button.png')
+
+        cancel_box = pygame.image.load("data/buttons/cancel_button.png")
+        control_page = pygame.image.load("data/images/rules_popup.png")
 
         play_button = Button(225,300,*play_font.get_size(),self.win,True)
         rule_button = Button(225,425,*rules_font.get_size(),self.win,True)
