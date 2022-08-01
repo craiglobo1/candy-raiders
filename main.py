@@ -2,7 +2,7 @@ from operator import imod
 import pygame
 from objects import EnemySpawner, Player, Animator
 from button import Button
-from sound import Sound
+import os
  
 size = width, height  = 700, 800
 FPS = 60
@@ -71,12 +71,9 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
            
                     if pygame.mouse.get_pressed()[0]:
-                        
-                       
-                            
                             
                         if quit_button.selected(*pos):
-                            self.playing = False
+                            os._exit(0)
  
                         elif rule_button.selected(*pos):
                             rules_popup = True
@@ -104,8 +101,8 @@ class Game:
  
                         
                         elif play_button.selected(*pos):
-                            return
-                        
+                            self.new_game()
+                            os._exit(0)                        
                 
             
             music_pic = pygame.image.load('data/buttons/music_button_toggled.png')
