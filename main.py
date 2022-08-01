@@ -226,6 +226,8 @@ class Game:
 
 
         if self.end_screen:
+            for l in self.player.projectiles.get_all():
+                l.active = False
             end_screen_surf = pygame.image.load("data\images\End Screen.png")
             self.win.blit(end_screen_surf, (0,0))
             text_score = self.font_roboto.render(f"{self.times_enemy_damaged*50}", True, (0,0,0))

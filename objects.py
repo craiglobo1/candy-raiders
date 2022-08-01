@@ -71,7 +71,6 @@ class Player:
     def draw(self, win : pygame.Surface):
         win.blit(self.animator.get_frame(), (self.x, self.y))
         self.health.draw(win, self.x, self.y + self.height + 10)
-        # pygame.draw.rect(win, (0,0,255), pygame.Rect(self.x, self.y, self.width, self.height))
 
         self.projectiles.draw(win)
     
