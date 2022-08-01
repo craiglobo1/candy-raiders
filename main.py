@@ -33,33 +33,25 @@ class Game:
         pygame.mixer.music.set_volume(1)
         pygame.mixer.music.play(-1)
         background_colour = (255,97,97)
-        rect = pygame.Rect(225,300,250,75)
-        middle_rect = pygame.Rect(225,420,250,75)
-        end_rect = pygame.Rect(225,540,250,75)
         rules_surface = pygame.Surface((width,height))
-        rules_surface.fill(background_colour)
-        rule_rect = pygame.Rect(100,100,500,560)
-        popup_colour = (175,242,255)
-        rect_colour=(255,97,97)
-        A_rect = pygame.Rect(100,100,500,560)
- 
+        rules_surface.fill(background_colour) 
         rules_popup =False
-        start_play = False
  
         self.playing = True
-        play_button = Button(225,300,250,75,self.win,True)
-        rule_button = Button(225,425,250,75,self.win,True)
-        quit_button = Button(225,540,250,75,self.win,True)
-        music_button = Button(600,10,80,80,self.win,True)
-        rule_cancel_button = Button(210,470,280,105,rules_surface,False)
  
         control_page = pygame.image.load("data/images/rules_popup.png")
         cancel_box = pygame.image.load("data/buttons/cancel_button.png")
         game_title= pygame.image.load("data/images/game_title.png")
         background = pygame.image.load('data/images/background_still.png')
+        play_font = pygame.image.load('data/buttons/play_button.png')
         rules_font = pygame.image.load("data/buttons/rules_button.png")
         quit_font = pygame.image.load('data/buttons/quit_button.png')
-        play_font = pygame.image.load('data/buttons/play_button.png')
+
+        play_button = Button(225,300,*play_font.get_size(),self.win,True)
+        rule_button = Button(225,425,*rules_font.get_size(),self.win,True)
+        quit_button = Button(225,540,*quit_font.get_size(),self.win,True)
+        music_button = Button(600,10,80,80,self.win,True)
+        rule_cancel_button = Button(210,470,280,105,rules_surface,False)
         while self.playing == True:
             pos = pygame.mouse.get_pos()
             self.clock.tick(60)
@@ -75,32 +67,33 @@ class Game:
                         if quit_button.selected(*pos):
                             os._exit(0)
  
-                        elif rule_button.selected(*pos):
+                        if rule_button.selected(*pos):
+                            play_button.activation = False
+                            rule_button.activation = False
+                            quit_button.activation = False
+                            music_button.activation = False
+                            rule_cancel_button.activation = False
                             rules_popup = True
-                            play_button = Button(225,300,250,75,self.win,False)
-                            rule_button = Button(225,420,250,75,self.win,False)
-                            quit_button = Button(225,540,250,75,self.win,False)
-                            music_button = Button(600,10,80,80,self.win,False)
-                            rule_cancel_button = Button(210,470,280,105,rules_surface,True)
 
 
 
-                        elif music_button.selected(*pos):
+                        if music_button.selected(*pos):
                             self.toggle_music()
-
 
 
                         if rules_popup == True:
                             if rule_cancel_button.selected(*pos):
                                 rules_popup = False
-                                play_button = Button(225,300,250,75,self.win,True)
-                                rule_button = Button(225,420,250,75,self.win,True)
-                                quit_button = Button(225,540,250,75,self.win,True)
-                                music_button = Button(600,10,80,80,self.win,True)
+                                play_button.activation = True
+                                rule_button.activation = True
+                                quit_button.activation = True
+                                music_button.activation = True
                                 rule_cancel_button = Button(210,470,280,105,rules_surface,False)
+                                
+                            rule_cancel_button.activation = True
  
                         
-                        elif play_button.selected(*pos):
+                        if play_button.selected(*pos):
                             self.new_game()
                             os._exit(0)                        
                 
