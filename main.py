@@ -20,7 +20,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.font_roboto = pygame.font.Font("fonts\Roboto-Regular.ttf", 64)
         self.backround_music = pygame.mixer.Sound('music/background_music.wav')
-        self.backround_music.set_volume(1)
+        self.backround_music.set_volume(0.2)
         self.music_channel = self.backround_music.play(-1)
         self.fx = SoundFX(self.music_channel, "sfx/")
     
