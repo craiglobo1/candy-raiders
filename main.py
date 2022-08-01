@@ -15,7 +15,7 @@ class Game:
         icon_surf = pygame.image.load("data\images\cr_icon.png")
         pygame.display.set_icon(icon_surf)
         self.clock = pygame.time.Clock()
-        self.font_roboto = pygame.font.Font("fonts\Roboto-Regular.ttf", 20)
+        self.font_roboto = pygame.font.Font("fonts\Roboto-Regular.ttf", 64)
     
     def new(self):
         self.main_menu()
@@ -23,9 +23,9 @@ class Game:
  
     def new_game(self):
         self.player = Player(width*0.05, height*0.85)
-        s = time.time()
         self.enemies = EnemySpawner(self.player.animator.get_size()[0], width- self.player.animator.get_size()[1],height, speed=0.8, rate_of_fire=300)
         self.end_screen = False
+        self.times_enemy_damaged = 0
         self.frame_count = 60*60
 
         self.run()
@@ -174,7 +174,8 @@ class Game:
         for l in self.player.projectiles.get_all():
                 if l.active:
                     hit = self.enemies.damage(l.get_rect(), l.damage)
-                    if hit:
+                    if hit and not end_game:
+                        self.times_enemy_damaged += 1
                         l.active = False
                         l.y = 0
 
@@ -225,21 +226,16 @@ class Game:
 
 
         if self.end_screen:
-            blue_colour = (175,242,255)
-            button_colour = (52,209,199)
             end_screen_surf = pygame.image.load("data\images\End Screen.png")
             self.win.blit(end_screen_surf, (0,0))
+            text_score = self.font_roboto.render(f"{self.times_enemy_damaged*50}", True, (0,0,0))
+            self.win.blit(text_score, (width*.5-text_score.get_width()*.5, height*0.35))
             
            
         pygame.display.flip()
         self.win.fill(0)
 
-
-
-        def draw_text(self, win, text, pos, font):
-            
-            img = font.render(text, True, (255,255,255))
-            win.blit(img, pos)
+        
          
 
 
