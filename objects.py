@@ -41,7 +41,7 @@ class Player:
         self.RIGHT = False
         self.LEFT = False
 
-        self.projectiles = ProjectilePool(10,"data\projectiles\candy-projectile.png", direction=1)
+        self.projectiles = ProjectilePool(10,"candy_projectile", direction=1)
     
     def move(self, right, left):
         self.RIGHT = right
@@ -75,7 +75,7 @@ class Player:
         self.projectiles.draw(win)
     
     def shoot(self):
-        self.projectiles.create(self.x + self.width*0.5, self.y+5)
+        self.projectiles.create(self.x + self.width*0.5, self.y)
     
     def damage(self, rect : pygame.Rect, damage : int):
         
@@ -103,7 +103,7 @@ class Enemy:
         self.active = active
         self.rate_of_fire = rate_of_fire 
 
-        self.projectiles = ProjectilePool(10,"data\projectiles\candy_goo_projectile.png",direction=-1)
+        self.projectiles = ProjectilePool(10,"candy_goo",direction=-1)
         self.time_till_last_proj = rate_of_fire
 
         self.health = 50
@@ -202,28 +202,29 @@ class EnemySpawner:
 
 
 class Projectile:
-    def __init__(self, speed, direction, active=False, image="data/projectiles/laser.png") -> None:
+    def __init__(self, speed, direction, anim_state, active=False) -> None:
         self.x = 0
         self.y = 0
         self.damage = 25
         self.speed = speed
         self.active = active
-        self.image = pygame.image.load(image)
+        self.animator = Animator("data\sprites", anim_state)
         self.direction = direction
     
     def draw(self, win : pygame.Surface):
         if self.active:
-            win.blit(self.image, (self.x, self.y))
+            win.blit(self.animator.get_frame(), (self.x, self.y))
     
     def update(self, dt):
         if self.active:
+            self.animator.update(dt)
             self.y -= dt*self.speed*self.direction
     
     def get_rect(self):
-        return pygame.Rect(self.x, self.y, *self.image.get_size())
+        return pygame.Rect(self.x, self.y, *self.animator.get_size())
 
     def get_size(self):
-        return self.image.get_size()
+        return self.animator.get_size()
     
     def set_pos(self, x, y):
         self.x = x 
@@ -231,9 +232,9 @@ class Projectile:
 
 
 class ProjectilePool:
-    def __init__(self, size : int, img_file,  rate_of_fire : float = 30,  direction = -1) -> None:
+    def __init__(self, size : int, anim_state,  rate_of_fire : float = 30,  direction = -1) -> None:
         self.size = size
-        self.projectiles : List[Projectile] = [Projectile(3,direction,image=img_file) for _ in range(size)]
+        self.projectiles : List[Projectile] = [Projectile(3, direction, anim_state) for _ in range(size)]
         self.cur_projectile = 0
         self.rate_of_fire = rate_of_fire
         self.time_till_last_fire = rate_of_fire
@@ -242,8 +243,7 @@ class ProjectilePool:
         if self.time_till_last_fire < self.rate_of_fire:
             return
 
-
-        self.projectiles[self.cur_projectile].set_pos(x-self.projectiles[0].get_size()[0]*.5,y)
+        self.projectiles[self.cur_projectile].set_pos(x-self.projectiles[0].get_size()[0]*.5, y - self.projectiles[0].get_size()[1])
         self.projectiles[self.cur_projectile].active = True
         self.cur_projectile = (self.cur_projectile+1)%self.size
         self.time_till_last_fire = 0
@@ -267,6 +267,9 @@ class ProjectilePool:
 
     def get_all(self):
         return self.projectiles
+
+    def get_size(self):
+        return self.projectiles[self.cur_projectile].animator.get_size()
 
 
 class Animator:
