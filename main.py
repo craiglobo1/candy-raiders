@@ -108,9 +108,7 @@ class Game:
             music_pic = pygame.image.load('data/buttons/music_button_toggled.png')
             self.win.blit(music_pic,(600,10))
  
-            pygame.draw.rect(self.win,rect_colour, middle_rect, width == 1, border_radius=10)
-            pygame.draw.rect(self.win,rect_colour, end_rect, width == 1, border_radius=10)
-            background.set_alpha(150)
+            background.set_alpha(200)
             self.win.blit(background,(0,0))
             self.win.blit(game_title,(50,100))
             self.win.blit(play_font,(225,300))
@@ -160,6 +158,8 @@ class Game:
                     self.end_screen = False
                     self.new()
                     self.playing = False
+                if event.key == pygame.K_m:
+                    self.toggle_music()
  
         if not self.end_screen:
             self.player.move(keys[pygame.K_RIGHT]|keys[pygame.K_d], keys[pygame.K_LEFT]|keys[pygame.K_a])
