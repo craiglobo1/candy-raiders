@@ -16,7 +16,7 @@ class Game:
         self.font_roboto = pygame.font.Font("fonts\Roboto-Regular.ttf", 20)
     
     def new(self):
-        self.main_menu(self.win)
+        self.main_menu()
         self.new_game()
  
     def new_game(self):
@@ -27,7 +27,7 @@ class Game:
 
         self.run()
  
-    def main_menu(self,win):
+    def main_menu(self):
         
         pygame.mixer.music.load('music/background_music.wav')
         pygame.mixer.music.set_volume(1)
@@ -106,15 +106,7 @@ class Game:
                         elif play_button.selected(*pos):
                             return
                         
-                                
-                            
-                        
-
-
-
-
-                           
-                        
+                
             
             music_pic = pygame.image.load('data/buttons/music_button_toggled.png')
             self.win.blit(music_pic,(600,10))
@@ -169,7 +161,7 @@ class Game:
                     self.playing = False
                 if event.key == pygame.K_ESCAPE and self.end_screen:
                     self.end_screen = False
-                    self.main_menu(self.win)
+                    self.new()
                     self.playing = False
  
         if not self.end_screen:
