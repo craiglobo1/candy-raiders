@@ -305,4 +305,3 @@ class Animator:
     
     def get_size(self):
         return self.images[self.cur_state][self.frame].get_size()
-
