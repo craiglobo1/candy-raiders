@@ -21,9 +21,9 @@ class Game:
 
     def new_game(self):
         self.player = Player(width*0.05, height*0.85)
-        self.enemies = EnemySpawner(self.player.animator.get_size()[0], width- self.player.animator.get_size()[1],height)
+        self.enemies = EnemySpawner(self.player.animator.get_size()[0], width- self.player.animator.get_size()[1],height, speed=0.8, rate_of_fire=300)
         self.end_screen = False
-        self.frame_count = 0
+        self.frame_count = 60*60
 
         self.run()
 
@@ -192,6 +192,8 @@ class Game:
                     hit = self.enemies.damage(l.get_rect(), l.damage)
                     if hit:
                         l.active = False
+                        l.y = 0
+
         
         for e in self.enemies.enemies:
             for l in e.projectiles.get_all():
@@ -199,9 +201,11 @@ class Game:
                     hit = self.player.damage(l.get_rect(), l.damage)
                     if hit:
                         l.active = False
+                        l.y = 0
         
         if self.player.health.get_health() <= 0:
             self.end_screen = True
+
 
             
         
@@ -210,6 +214,10 @@ class Game:
         if self.total_seconds < 0:
             self.total_seconds = 0
         self.frame_count+=1
+
+        if self.total_seconds <= 0:
+            self.end_screen = True
+
 
     def draw(self):
         game_background = pygame.image.load('data/images/game_background.png')

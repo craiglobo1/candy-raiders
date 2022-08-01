@@ -143,7 +143,7 @@ class Enemy:
 
 
 class EnemySpawner:
-    def __init__(self,start_x, end_x, game_height, speed=1, rate_of_fire=200, dx = 1, size=10) -> None:
+    def __init__(self,start_x, end_x, game_height, speed=1, rate_of_fire=200, dx = 1, size=100) -> None:
         self.start_x = start_x
         self.end_x = end_x
         self.speed = speed
@@ -197,10 +197,7 @@ class EnemySpawner:
                 self.enemies[collided].animator.cur_state = "monster_hurt"
 
             if self.enemies[collided].health <= 0:
-                self.enemies[collided].active = False
-                self.enemies[collided].x = randint(self.start_x,self.end_x)
-                self.enemies[collided].y = 0
-                self.enemies[collided].health = 50
+                self.enemies[collided] = Enemy(randint(self.start_x,self.end_x), 0)
         return collided != -1
     
 
