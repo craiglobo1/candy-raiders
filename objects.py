@@ -143,7 +143,7 @@ class Enemy:
 
 
 class EnemySpawner:
-    def __init__(self,start_x, end_x, game_height, speed=1, rate_of_fire=200, dx = 1, size=100) -> None:
+    def __init__(self,start_x, end_x, game_height, speed=1, rate_of_fire=200, dx = 1, size=10) -> None:
         self.start_x = start_x
         self.end_x = end_x
         self.speed = speed

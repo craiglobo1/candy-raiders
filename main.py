@@ -2,7 +2,7 @@ from operator import imod
 import pygame
 from objects import EnemySpawner, Player, Animator
 from button import Button
-import os
+import os, time
  
 size = width, height  = 700, 800
 FPS = 60
@@ -23,6 +23,7 @@ class Game:
  
     def new_game(self):
         self.player = Player(width*0.05, height*0.85)
+        s = time.time()
         self.enemies = EnemySpawner(self.player.animator.get_size()[0], width- self.player.animator.get_size()[1],height, speed=0.8, rate_of_fire=300)
         self.end_screen = False
         self.frame_count = 60*60
@@ -62,7 +63,7 @@ class Game:
             for event in pygame.event.get():    
                 if event.type == pygame.QUIT:
                     if self.playing:
-                        self.playing = False
+                        os._exit(0)
                 
                 if event.type == pygame.MOUSEBUTTONDOWN:
            
@@ -105,7 +106,7 @@ class Game:
             music_pic = pygame.image.load('data/buttons/music_button_toggled.png')
             self.win.blit(music_pic,(600,10))
  
-            background.set_alpha(200)
+            background.set_alpha(180)
             self.win.blit(background,(0,0))
             self.win.blit(game_title,(50,100))
             self.win.blit(play_font,(225,300))
@@ -226,14 +227,8 @@ class Game:
         if self.end_screen:
             blue_colour = (175,242,255)
             button_colour = (52,209,199)
-            middle_rect = pygame.Rect(225,420,250,75)
-            end_rect = pygame.Rect(225,540,250,75)
-            bg_black = pygame.Surface((width,height))
-            bg_black.fill(blue_colour)
-            title_font = pygame.font.SysFont('agencyfb',150 )
-            game_over_text = title_font.render('Game Over!',True,button_colour)
-            bg_black.blit(game_over_text,(100,300))
-            self.win.blit(bg_black, (0,0))
+            end_screen_surf = pygame.image.load("data\images\End Screen.png")
+            self.win.blit(end_screen_surf, (0,0))
             
            
         pygame.display.flip()
