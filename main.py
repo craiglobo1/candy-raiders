@@ -10,12 +10,18 @@ class Game:
     def __init__(self) -> None:
         pygame.font.init()
         pygame.init()
+        pygame.mixer.init()
+
         self.win = pygame.display.set_mode(size,pygame.SRCALPHA)
         pygame.display.set_caption("Candy Raiders")
         icon_surf = pygame.image.load("data\images\cr_icon.png")
         pygame.display.set_icon(icon_surf)
+
         self.clock = pygame.time.Clock()
         self.font_roboto = pygame.font.Font("fonts\Roboto-Regular.ttf", 64)
+        self.backround_music = pygame.mixer.Sound('music/background_music.wav')
+        self.backround_music.set_volume(1)
+        self.music_channel = self.backround_music.play(-1)
     
     def new(self):
         self.main_menu()
@@ -31,10 +37,6 @@ class Game:
         self.run()
  
     def main_menu(self):
-        
-        pygame.mixer.music.load('music/background_music.wav')
-        pygame.mixer.music.set_volume(1)
-        pygame.mixer.music.play(-1)
         background_colour = (255,97,97)
         rules_surface = pygame.Surface((width,height))
         rules_surface.fill(background_colour) 
@@ -121,10 +123,10 @@ class Game:
             self.win.fill(0)
  
     def toggle_music(self):
-        if pygame.mixer.music.get_busy():
-            pygame.mixer.music.pause()
+        if self.music_channel.get_busy():
+            self.backround_music.stop()
         else:
-             pygame.mixer.music.unpause()
+             self.backround_music.play(-1)
 
 
 

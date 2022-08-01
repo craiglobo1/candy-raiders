@@ -305,3 +305,8 @@ class Animator:
     
     def get_size(self):
         return self.images[self.cur_state][self.frame].get_size()
+
+
+class SoundFX:
+    def __init__(self) -> None:
+        pass
