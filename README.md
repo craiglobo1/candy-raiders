@@ -1,5 +1,4 @@
 # NATHACKS 2022: Candy raiders
----
 
 Candy Raiders is a shoot 'em up game where players control a candy ship, try to eliminate as many candy monsters as possible, and change the state of the game based on how concentrated they are!
 
