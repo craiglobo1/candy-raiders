@@ -1,4 +1,3 @@
-from operator import imod
 import pygame
 from objects import EnemySpawner, Player, SoundFX, load_sprites
 from button import Button
