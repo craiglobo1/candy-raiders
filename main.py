@@ -1,6 +1,6 @@
 from operator import imod
 import pygame
-from objects import EnemySpawner, Player, Animator, SoundFX
+from objects import EnemySpawner, Player, SoundFX, load_sprites
 from button import Button
 import os, time
  
@@ -22,6 +22,9 @@ class Game:
         self.backround_music = pygame.mixer.Sound('music/background_music.wav')
         self.backround_music.set_volume(0.2)
         self.music_channel = self.backround_music.play(-1)
+        self.backround_music.stop()
+
+        self.sprite_data = load_sprites("data/sprites")
         self.fx = SoundFX(self.music_channel, "sfx/")
     
     def new(self):
@@ -29,8 +32,9 @@ class Game:
         self.new_game()
  
     def new_game(self):
-        self.player = Player(width*0.05, height*0.85)
-        self.enemies = EnemySpawner(self.player.animator.get_size()[0], width- self.player.animator.get_size()[1],height, speed=0.8, rate_of_fire=300)
+        self.player = Player(width*0.05, height*0.85, self.sprite_data)
+
+        self.enemies = EnemySpawner(self.player.animator.get_size()[0], width- self.player.animator.get_size()[1], height, self.sprite_data, speed=0.8, rate_of_fire=300)
         self.end_screen = False
         self.times_enemy_damaged = 0
         self.frame_count = 60*60

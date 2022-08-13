@@ -3,6 +3,28 @@ from random import randint
 from typing import List 
 import json
 import os
+import time
+from dataclasses import dataclass
+
+@dataclass
+class SpriteData:
+    images : dict
+    anim_data : dict
+
+def load_sprites(sprites_path):
+    anim_data = json.load(open(os.path.join(sprites_path,'anim_data.json')))
+    images = {}
+
+    # load sprites as animation folders in a dictionary
+    for folder in os.listdir(sprites_path):
+        if folder != "anim_data.json":
+            images[folder] = []
+            for img_file in os.listdir(os.path.join(sprites_path, folder)):
+                img = pygame.image.load(os.path.join(sprites_path, folder, img_file))
+                img_scale = anim_data[folder]["scale"]
+                img = pygame.transform.scale(img, (int(img.get_width()*img_scale), int(img.get_height()*img_scale)))
+                images[folder].append(img)
+    return SpriteData(images, anim_data)
 
 class SoundFX:
     def __init__(self, music_channel : pygame.mixer.Channel, fx_path : str) -> None:
@@ -34,11 +56,11 @@ class HealthBar:
 
 
 class Player:
-    def __init__(self, x, y, acc=0, drag=-0.09,max_dx=4) -> None:
+    def __init__(self, x, y, sprite_data, acc=0, drag=-0.09,max_dx=4) -> None:
         self.x = x
         self.y = y
 
-        self.animator = Animator("data\sprites", "candy_ship")
+        self.animator = Animator(sprite_data, "candy_ship")
 
         self.width, self.height = self.animator.get_size()
         self.dx = 0
@@ -52,7 +74,7 @@ class Player:
         self.RIGHT = False
         self.LEFT = False
 
-        self.projectiles = ProjectilePool(10,"candy_projectile", direction=1)
+        self.projectiles = ProjectilePool(10,"candy_projectile",sprite_data, direction=1)
     
     def move(self, right, left):
         self.RIGHT = right
@@ -86,8 +108,10 @@ class Player:
         self.projectiles.draw(win)
     
     def shoot(self, fx : SoundFX):
-        self.projectiles.create(self.x + self.width*0.5, self.y)
-        fx.play_sound("laser_shoot")
+        shot = self.projectiles.create(self.x + self.width*0.5, self.y)
+        if shot:
+            fx.play_sound("laser_shoot")
+
     
     def damage(self, rect : pygame.Rect, damage : int, fx : SoundFX):
         
@@ -105,18 +129,20 @@ class Player:
 
 
 class Enemy:
-    def __init__(self, x, y, rate_of_fire=150, active=False,image="data\sprites\monster_idle\candy_monster.png") -> None:
+    def __init__(self, x, y,sprite_data, rate_of_fire=150, active=False,image="data\sprites\monster_idle\candy_monster.png") -> None:
         self.x = x
         self.y = y
 
-        self.animator = Animator("data\sprites", "monster_idle")
+        # s = time.time()
+        self.animator = Animator(sprite_data, "monster_idle")
+        # print(time.time() - s)
         self.width, self.height = self.animator.get_size()
 
 
         self.active = active
         self.rate_of_fire = rate_of_fire 
 
-        self.projectiles = ProjectilePool(10,"candy_goo",direction=-1)
+        self.projectiles = ProjectilePool(10,"candy_goo",sprite_data,direction=-1)
         self.time_till_last_proj = rate_of_fire
 
         self.health = 50
@@ -155,7 +181,7 @@ class Enemy:
 
 
 class EnemySpawner:
-    def __init__(self,start_x, end_x, game_height, speed=1, rate_of_fire=200, dx = 1, size=10) -> None:
+    def __init__(self,start_x, end_x, game_height,sprite_data, speed=1, rate_of_fire=200, dx = 1, size=15) -> None:
         self.start_x = start_x
         self.end_x = end_x
         self.speed = speed
@@ -167,7 +193,9 @@ class EnemySpawner:
         self.dir = 1
         self.dy = 0
 
-        self.enemies = [ Enemy(randint(self.start_x,self.end_x), 0) for i in range(size)]
+        self.sprite_data = sprite_data
+
+        self.enemies = [ Enemy(randint(self.start_x,self.end_x), 0,self.sprite_data) for i in range(size)]
         self.time_till_last_spawn = 180
         self.cur_enemy : int = 0
 
@@ -210,20 +238,20 @@ class EnemySpawner:
                 self.enemies[collided].animator.cur_state = "monster_hurt"
 
             if self.enemies[collided].health <= 0:
-                self.enemies[collided] = Enemy(randint(self.start_x,self.end_x), 0)
+                self.enemies[collided] = Enemy(randint(self.start_x,self.end_x), 0, self.sprite_data)
 
         return collided != -1
     
 
 
 class Projectile:
-    def __init__(self, speed, direction, anim_state, active=False) -> None:
+    def __init__(self, speed, direction,sprite_data, anim_state, active=False) -> None:
         self.x = 0
         self.y = 0
         self.damage = 25
         self.speed = speed
         self.active = active
-        self.animator = Animator("data\sprites", anim_state)
+        self.animator = Animator(sprite_data, anim_state)
         self.direction = direction
     
     def draw(self, win : pygame.Surface):
@@ -247,21 +275,22 @@ class Projectile:
 
 
 class ProjectilePool:
-    def __init__(self, size : int, anim_state,  rate_of_fire : float = 30,  direction = -1) -> None:
+    def __init__(self, size : int, anim_state, images,  rate_of_fire : float = 30,  direction = -1) -> None:
         self.size = size
-        self.projectiles : List[Projectile] = [Projectile(3, direction, anim_state) for _ in range(size)]
+        self.projectiles : List[Projectile] = [Projectile(3, direction, images, anim_state) for _ in range(size)]
         self.cur_projectile = 0
         self.rate_of_fire = rate_of_fire
         self.time_till_last_fire = rate_of_fire
     
     def create(self, x, y):
         if self.time_till_last_fire < self.rate_of_fire:
-            return
+            return False
 
         self.projectiles[self.cur_projectile].set_pos(x-self.projectiles[0].get_size()[0]*.5, y - self.projectiles[0].get_size()[1])
         self.projectiles[self.cur_projectile].active = True
         self.cur_projectile = (self.cur_projectile+1)%self.size
         self.time_till_last_fire = 0
+        return True
 
     def destroy(self, cur_projectile : int):
         self.projectiles[cur_projectile].active = False
@@ -288,23 +317,13 @@ class ProjectilePool:
 
 
 class Animator:
-    def __init__(self, sprites_path, init_state) -> None:
-        self.anim_data = json.load(open(os.path.join(sprites_path,'anim_data.json')))
-        self.images = {}
+    def __init__(self, sprite_data : SpriteData, init_state) -> None:
+        self.images = sprite_data.images
+        self.anim_data = sprite_data.anim_data
         self.cur_state = init_state
 
         self.dt = 0.0
         self.frame = 0
-        # load sprites as animation folders in a dictionary
-        for folder in os.listdir(sprites_path):
-            if folder != "anim_data.json":
-                self.images[folder] = []
-                for img_file in os.listdir(os.path.join(sprites_path, folder)):
-                    img = pygame.image.load(os.path.join(sprites_path, folder, img_file))
-                    img_scale = self.anim_data[folder]["scale"]
-                    img = pygame.transform.scale(img, (int(img.get_width()*img_scale), int(img.get_height()*img_scale)))
-                    self.images[folder].append(img)
-
     
     def next_frame(self):
         self.frame = (self.frame + 1) % len(self.images[self.cur_state])
